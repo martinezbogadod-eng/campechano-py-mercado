@@ -4,8 +4,8 @@ import SearchFilters from '@/components/SearchFilters';
 import CategoryBar from '@/components/CategoryBar';
 import ListingGrid from '@/components/ListingGrid';
 import ListingDetail from '@/components/ListingDetail';
-import { mockListings } from '@/data/mockListings';
-import { Category, Listing } from '@/types/listing';
+import { useListings, DbListing } from '@/hooks/useListings';
+import { Category, Listing, CATEGORIES } from '@/types/listing';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,8 +14,31 @@ const Index = () => {
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
+  const { data: dbListings, isLoading } = useListings();
+
+  // Convert DB listings to the Listing type expected by components
+  const listings: Listing[] = useMemo(() => {
+    if (!dbListings) return [];
+    return dbListings.map((l) => ({
+      id: l.id,
+      title: l.title,
+      description: l.description,
+      price: l.price ?? 0,
+      currency: l.currency as 'PYG' | 'USD',
+      category: l.category,
+      department: l.department,
+      city: l.city,
+      phone: l.phone_whatsapp,
+      imageUrl: l.images[0] || `https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800&q=80`,
+      featured: l.featured,
+      createdAt: l.created_at,
+      lat: l.lat ?? undefined,
+      lon: l.lon ?? undefined,
+    }));
+  }, [dbListings]);
+
   const filteredListings = useMemo(() => {
-    return mockListings.filter((listing) => {
+    return listings.filter((listing) => {
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
@@ -43,7 +66,7 @@ const Index = () => {
 
       return true;
     });
-  }, [searchQuery, selectedCategory, selectedDepartment, showFeaturedOnly]);
+  }, [listings, searchQuery, selectedCategory, selectedDepartment, showFeaturedOnly]);
 
   // Sort: featured first, then by date
   const sortedListings = useMemo(() => {
@@ -95,15 +118,30 @@ const Index = () => {
         {/* Results count */}
         <div className="mb-4">
           <p className="text-sm text-muted-foreground">
-            {sortedListings.length} anuncio{sortedListings.length !== 1 ? 's' : ''} encontrado{sortedListings.length !== 1 ? 's' : ''}
+            {isLoading ? 'Cargando...' : `${sortedListings.length} anuncio${sortedListings.length !== 1 ? 's' : ''} encontrado${sortedListings.length !== 1 ? 's' : ''}`}
           </p>
         </div>
 
-        {/* Listings grid */}
-        <ListingGrid
-          listings={sortedListings}
-          onListingClick={setSelectedListing}
-        />
+        {/* Loading state */}
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          </div>
+        ) : sortedListings.length === 0 ? (
+          <div className="rounded-lg border bg-card p-12 text-center">
+            <p className="text-lg text-muted-foreground">
+              No hay anuncios disponibles
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              ¡Sé el primero en publicar!
+            </p>
+          </div>
+        ) : (
+          <ListingGrid
+            listings={sortedListings}
+            onListingClick={setSelectedListing}
+          />
+        )}
       </main>
 
       {/* Footer */}

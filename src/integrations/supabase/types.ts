@@ -14,7 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      listings: {
+        Row: {
+          category: Database["public"]["Enums"]["listing_category"]
+          city: string
+          created_at: string
+          currency: string
+          department: string
+          description: string
+          featured: boolean
+          id: string
+          images: string[] | null
+          lat: number | null
+          lon: number | null
+          phone_whatsapp: string
+          price: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["listing_category"]
+          city: string
+          created_at?: string
+          currency?: string
+          department: string
+          description: string
+          featured?: boolean
+          id?: string
+          images?: string[] | null
+          lat?: number | null
+          lon?: number | null
+          phone_whatsapp: string
+          price?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["listing_category"]
+          city?: string
+          created_at?: string
+          currency?: string
+          department?: string
+          description?: string
+          featured?: boolean
+          id?: string
+          images?: string[] | null
+          lat?: number | null
+          lon?: number | null
+          phone_whatsapp?: string
+          price?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          phone_whatsapp: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name?: string | null
+          phone_whatsapp?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          phone_whatsapp?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +103,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      listing_category:
+        | "granos"
+        | "frutas-verduras"
+        | "ganaderia"
+        | "maquinaria"
+        | "insumos"
+        | "servicios"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +236,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      listing_category: [
+        "granos",
+        "frutas-verduras",
+        "ganaderia",
+        "maquinaria",
+        "insumos",
+        "servicios",
+      ],
+    },
   },
 } as const
