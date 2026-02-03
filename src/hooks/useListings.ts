@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
-import type { Category } from '@/types/listing';
+import type { Category, PriceUnit } from '@/types/listing';
 
 export interface DbListing {
   id: string;
@@ -9,6 +9,7 @@ export interface DbListing {
   title: string;
   description: string;
   price: number | null;
+  price_unit: string | null;
   currency: string;
   category: Category;
   department: string;
@@ -16,6 +17,7 @@ export interface DbListing {
   phone_whatsapp: string;
   images: string[];
   featured: boolean;
+  featured_until: string | null;
   lat: number | null;
   lon: number | null;
   created_at: string;
@@ -26,6 +28,7 @@ export interface ListingInsert {
   title: string;
   description: string;
   price: number | null;
+  price_unit: string | null;
   currency: string;
   category: Category;
   department: string;
@@ -154,6 +157,23 @@ export async function uploadListingImage(file: File, userId: string): Promise<st
 
   const { data: { publicUrl } } = supabase.storage
     .from('listing-images')
+    .getPublicUrl(fileName);
+
+  return publicUrl;
+}
+
+export async function uploadPaymentReceipt(file: File, userId: string): Promise<string> {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${userId}/${crypto.randomUUID()}.${fileExt}`;
+
+  const { error } = await supabase.storage
+    .from('payment-receipts')
+    .upload(fileName, file);
+
+  if (error) throw error;
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('payment-receipts')
     .getPublicUrl(fileName);
 
   return publicUrl;

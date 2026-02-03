@@ -1,6 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsAdmin } from '@/hooks/useAdmin';
+import { useConversations } from '@/hooks/useMessages';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,11 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Leaf, Plus, User, LogOut, FileText } from 'lucide-react';
+import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield } from 'lucide-react';
 
 const Header = () => {
   const { user, signOut } = useAuth();
+  const { data: isAdmin } = useIsAdmin();
+  const { data: conversations } = useConversations();
   const navigate = useNavigate();
+
+  const unreadCount = conversations?.reduce((sum, c) => sum + c.unreadCount, 0) || 0;
 
   const handleSignOut = async () => {
     await signOut();
@@ -39,10 +46,26 @@ const Header = () => {
         <div className="flex items-center gap-2">
           {user ? (
             <>
+              {/* Messages button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate('/mensajes')}
+                className="relative"
+              >
+                <MessageCircle className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs bg-accent text-accent-foreground">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </Badge>
+                )}
+              </Button>
+
               <Button onClick={() => navigate('/publicar')} size="sm">
                 <Plus className="mr-1 h-4 w-4" />
                 <span className="hidden sm:inline">Publicar</span>
               </Button>
+              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="icon">
@@ -58,6 +81,24 @@ const Header = () => {
                     <FileText className="mr-2 h-4 w-4" />
                     Mis Anuncios
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/mensajes')}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Mensajes
+                    {unreadCount > 0 && (
+                      <Badge className="ml-auto bg-accent text-accent-foreground">
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => navigate('/admin')}>
+                        <Shield className="mr-2 h-4 w-4" />
+                        Panel Admin
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />

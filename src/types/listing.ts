@@ -6,19 +6,27 @@ export type Category =
   | 'insumos'
   | 'servicios';
 
+export type PriceUnit = 'Kg' | 'Litros' | 'Unidad' | 'Docena' | 'Bolsa' | 'Tonelada';
+
+export const PRICE_UNITS: PriceUnit[] = ['Kg', 'Litros', 'Unidad', 'Docena', 'Bolsa', 'Tonelada'];
+
 export interface Listing {
   id: string;
   title: string;
   description: string;
-  price: number;
+  price: number | null;
+  priceUnit: PriceUnit | null;
   currency: 'PYG' | 'USD';
   category: Category;
   department: string;
   city: string;
   phone: string;
   imageUrl: string;
+  images: string[];
   featured: boolean;
+  featuredUntil: string | null;
   createdAt: string;
+  userId: string;
   lat?: number;
   lon?: number;
 }

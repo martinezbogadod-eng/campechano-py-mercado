@@ -5,7 +5,7 @@ import CategoryBar from '@/components/CategoryBar';
 import ListingGrid from '@/components/ListingGrid';
 import ListingDetail from '@/components/ListingDetail';
 import { useListings, DbListing } from '@/hooks/useListings';
-import { Category, Listing, CATEGORIES } from '@/types/listing';
+import { Category, Listing, CATEGORIES, PriceUnit } from '@/types/listing';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,15 +23,19 @@ const Index = () => {
       id: l.id,
       title: l.title,
       description: l.description,
-      price: l.price ?? 0,
+      price: l.price,
+      priceUnit: l.price_unit as PriceUnit | null,
       currency: l.currency as 'PYG' | 'USD',
       category: l.category,
       department: l.department,
       city: l.city,
       phone: l.phone_whatsapp,
-      imageUrl: l.images[0] || `https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800&q=80`,
+      imageUrl: l.images?.[0] || `https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800&q=80`,
+      images: l.images || [],
       featured: l.featured,
+      featuredUntil: l.featured_until,
       createdAt: l.created_at,
+      userId: l.user_id,
       lat: l.lat ?? undefined,
       lon: l.lon ?? undefined,
     }));

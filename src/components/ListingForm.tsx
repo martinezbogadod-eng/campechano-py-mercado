@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -17,19 +16,19 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useCreateListing, useUpdateListing, uploadListingImage, DbListing } from '@/hooks/useListings';
-import { CATEGORIES, DEPARTMENTS, Category } from '@/types/listing';
+import { CATEGORIES, DEPARTMENTS, Category, PRICE_UNITS, PriceUnit } from '@/types/listing';
 import { Loader2, Upload, X } from 'lucide-react';
 
 const listingSchema = z.object({
   title: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
   description: z.string().min(20, 'Mínimo 20 caracteres').max(1000, 'Máximo 1000 caracteres'),
   price: z.string().optional(),
+  price_unit: z.string().optional(),
   currency: z.enum(['PYG', 'USD']),
   category: z.enum(['granos', 'frutas-verduras', 'ganaderia', 'maquinaria', 'insumos', 'servicios'] as const),
   department: z.string().min(1, 'Selecciona un departamento'),
   city: z.string().min(2, 'Mínimo 2 caracteres').max(50, 'Máximo 50 caracteres'),
   phone_whatsapp: z.string().regex(/^595\d{9}$/, 'Formato: 595XXXXXXXXX'),
-  featured: z.boolean(),
 });
 
 type ListingFormData = z.infer<typeof listingSchema>;
@@ -45,6 +44,9 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
   const [isUploading, setIsUploading] = useState(false);
   const [priceType, setPriceType] = useState<'fixed' | 'negotiable'>(
     listing?.price === null ? 'negotiable' : 'fixed'
+  );
+  const [selectedPriceUnit, setSelectedPriceUnit] = useState<PriceUnit | ''>(
+    (listing?.price_unit as PriceUnit) || ''
   );
   
   const { user } = useAuth();
@@ -64,18 +66,17 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
       title: listing?.title || '',
       description: listing?.description || '',
       price: listing?.price?.toString() || '',
+      price_unit: listing?.price_unit || '',
       currency: (listing?.currency as 'PYG' | 'USD') || 'PYG',
       category: listing?.category || 'granos',
       department: listing?.department || '',
       city: listing?.city || '',
       phone_whatsapp: listing?.phone_whatsapp || '',
-      featured: listing?.featured || false,
     },
   });
 
   const watchCategory = watch('category');
   const watchCurrency = watch('currency');
-  const watchFeatured = watch('featured');
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -88,6 +89,19 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         description: 'Máximo 5 imágenes por anuncio',
       });
       return;
+    }
+
+    // Validate file types
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    for (const file of files) {
+      if (!validTypes.includes(file.type)) {
+        toast({
+          variant: 'destructive',
+          title: 'Formato no válido',
+          description: 'Solo se aceptan imágenes JPG, PNG o WEBP',
+        });
+        return;
+      }
     }
 
     setIsUploading(true);
@@ -113,18 +127,29 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
   };
 
   const onSubmit = async (data: ListingFormData) => {
+    // Validate price unit when price is fixed
+    if (priceType === 'fixed' && !selectedPriceUnit) {
+      toast({
+        variant: 'destructive',
+        title: 'Unidad requerida',
+        description: 'Selecciona una unidad de precio',
+      });
+      return;
+    }
+
     try {
       const listingData = {
         title: data.title,
         description: data.description,
         price: priceType === 'negotiable' ? null : parseFloat(data.price || '0'),
+        price_unit: priceType === 'negotiable' ? null : selectedPriceUnit,
         currency: data.currency,
         category: data.category as Category,
         department: data.department,
         city: data.city,
         phone_whatsapp: data.phone_whatsapp,
         images,
-        featured: data.featured,
+        featured: false, // Users can't set featured directly anymore
       };
 
       if (listing) {
@@ -246,25 +271,47 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         </div>
 
         {priceType === 'fixed' && (
-          <div className="flex gap-2">
-            <Select
-              value={watchCurrency}
-              onValueChange={(value) => setValue('currency', value as 'PYG' | 'USD')}
-            >
-              <SelectTrigger className="w-24">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="PYG">Gs.</SelectItem>
-                <SelectItem value="USD">USD</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              type="number"
-              placeholder="Monto"
-              {...register('price')}
-              className="flex-1"
-            />
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <Select
+                value={watchCurrency}
+                onValueChange={(value) => setValue('currency', value as 'PYG' | 'USD')}
+              >
+                <SelectTrigger className="w-24">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="PYG">Gs.</SelectItem>
+                  <SelectItem value="USD">USD</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input
+                type="number"
+                placeholder="Monto"
+                {...register('price')}
+                className="flex-1"
+              />
+            </div>
+            
+            {/* Price Unit */}
+            <div className="space-y-2">
+              <Label>Unidad de precio *</Label>
+              <Select
+                value={selectedPriceUnit}
+                onValueChange={(value) => setSelectedPriceUnit(value as PriceUnit)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona unidad" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PRICE_UNITS.map((unit) => (
+                    <SelectItem key={unit} value={unit}>
+                      {unit}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         )}
       </div>
@@ -301,7 +348,7 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
 
       {/* Images */}
       <div className="space-y-2">
-        <Label>Imágenes (máx. 5)</Label>
+        <Label>Imágenes (máx. 5, solo JPG/PNG)</Label>
         <div className="flex flex-wrap gap-2">
           {images.map((url, index) => (
             <div key={index} className="relative">
@@ -323,7 +370,7 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
             <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/50 hover:border-primary">
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp"
                 multiple
                 onChange={handleImageUpload}
                 className="hidden"
@@ -337,21 +384,6 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
             </label>
           )}
         </div>
-      </div>
-
-      {/* Featured */}
-      <div className="flex items-center justify-between rounded-lg border p-4">
-        <div>
-          <Label htmlFor="featured">⭐ Destacar anuncio</Label>
-          <p className="text-sm text-muted-foreground">
-            Tu anuncio aparecerá primero en los resultados
-          </p>
-        </div>
-        <Switch
-          id="featured"
-          checked={watchFeatured}
-          onCheckedChange={(checked) => setValue('featured', checked)}
-        />
       </div>
 
       {/* Actions */}

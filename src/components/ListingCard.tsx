@@ -8,11 +8,20 @@ interface ListingCardProps {
   onClick: () => void;
 }
 
-const formatPrice = (price: number, currency: 'PYG' | 'USD') => {
-  if (currency === 'USD') {
-    return `US$ ${price.toLocaleString('es-PY')}`;
+const formatPrice = (price: number | null, currency: 'PYG' | 'USD', priceUnit: string | null) => {
+  if (price === null) {
+    return 'A convenir';
   }
-  return `₲ ${price.toLocaleString('es-PY')}`;
+  
+  const formattedPrice = currency === 'USD' 
+    ? `US$ ${price.toLocaleString('es-PY')}`
+    : `Gs. ${price.toLocaleString('es-PY')}`;
+  
+  if (priceUnit) {
+    return `${formattedPrice} / ${priceUnit}`;
+  }
+  
+  return formattedPrice;
 };
 
 const ListingCard = ({ listing, onClick }: ListingCardProps) => {
@@ -48,7 +57,7 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
           {listing.title}
         </h3>
         <p className="mb-3 text-xl font-bold text-primary">
-          {formatPrice(listing.price, listing.currency)}
+          {formatPrice(listing.price, listing.currency, listing.priceUnit)}
         </p>
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" />
