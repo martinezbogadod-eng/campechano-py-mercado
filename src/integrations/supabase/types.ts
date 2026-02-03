@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      featured_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          duration_days: number
+          id: string
+          listing_id: string
+          receipt_url: string
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          duration_days: number
+          id?: string
+          listing_id: string
+          receipt_url: string
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          duration_days?: number
+          id?: string
+          listing_id?: string
+          receipt_url?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "featured_requests_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listings: {
         Row: {
           category: Database["public"]["Enums"]["listing_category"]
@@ -23,12 +67,14 @@ export type Database = {
           department: string
           description: string
           featured: boolean
+          featured_until: string | null
           id: string
           images: string[] | null
           lat: number | null
           lon: number | null
           phone_whatsapp: string
           price: number | null
+          price_unit: string | null
           title: string
           updated_at: string
           user_id: string
@@ -41,12 +87,14 @@ export type Database = {
           department: string
           description: string
           featured?: boolean
+          featured_until?: string | null
           id?: string
           images?: string[] | null
           lat?: number | null
           lon?: number | null
           phone_whatsapp: string
           price?: number | null
+          price_unit?: string | null
           title: string
           updated_at?: string
           user_id: string
@@ -59,17 +107,57 @@ export type Database = {
           department?: string
           description?: string
           featured?: boolean
+          featured_until?: string | null
           id?: string
           images?: string[] | null
           lat?: number | null
           lon?: number | null
           phone_whatsapp?: string
           price?: number | null
+          price_unit?: string | null
           title?: string
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          listing_id: string
+          read: boolean
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          listing_id: string
+          read?: boolean
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          listing_id?: string
+          read?: boolean
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -95,14 +183,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "user" | "admin"
       listing_category:
         | "granos"
         | "frutas-verduras"
@@ -237,6 +353,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["user", "admin"],
       listing_category: [
         "granos",
         "frutas-verduras",
