@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import Header from '@/components/Header';
 import ListingForm from '@/components/ListingForm';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const NewListing = () => {
   const { user, loading } = useAuth();
+  const { data: profile, isLoading: profileLoading } = useProfile();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +19,15 @@ const NewListing = () => {
     }
   }, [user, loading, navigate]);
 
-  if (loading) {
+  const isProfileComplete = !!(
+    profile?.name &&
+    profile?.profile_type &&
+    profile?.department &&
+    profile?.city &&
+    profile?.phone_whatsapp
+  );
+
+  if (loading || profileLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -42,6 +53,24 @@ const NewListing = () => {
               Completa los datos para publicar tu anuncio en el marketplace
             </p>
           </div>
+
+          {!isProfileComplete && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Completá tu perfil</AlertTitle>
+              <AlertDescription>
+                Antes de publicar, necesitás completar tu perfil con nombre, tipo de perfil, 
+                ubicación y teléfono.
+                <Button
+                  variant="link"
+                  className="ml-2 h-auto p-0 text-destructive underline"
+                  onClick={() => navigate('/perfil')}
+                >
+                  Ir a Mi Perfil
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
 
           <div className="rounded-lg border bg-card p-6">
             <ListingForm onSuccess={() => navigate('/mis-anuncios')} />
