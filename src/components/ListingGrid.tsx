@@ -1,13 +1,15 @@
 import { Package } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import ListingCard from '@/components/ListingCard';
 import { Listing } from '@/types/listing';
 
 interface ListingGridProps {
   listings: Listing[];
-  onListingClick: (listing: Listing) => void;
 }
 
-const ListingGrid = ({ listings, onListingClick }: ListingGridProps) => {
+const ListingGrid = ({ listings }: ListingGridProps) => {
+  const navigate = useNavigate();
+
   if (listings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -31,7 +33,7 @@ const ListingGrid = ({ listings, onListingClick }: ListingGridProps) => {
         <ListingCard
           key={listing.id}
           listing={listing}
-          onClick={() => onListingClick(listing)}
+          onClick={() => navigate(`/anuncio/${listing.id}`)}
         />
       ))}
     </div>

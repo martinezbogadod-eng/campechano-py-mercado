@@ -3,7 +3,6 @@ import Header from '@/components/Header';
 import SearchFilters from '@/components/SearchFilters';
 import CategoryBar from '@/components/CategoryBar';
 import ListingGrid from '@/components/ListingGrid';
-import ListingDetail from '@/components/ListingDetail';
 import { useListings, DbListing } from '@/hooks/useListings';
 import { Category, Listing, CATEGORIES, PriceUnit } from '@/types/listing';
 
@@ -12,7 +11,6 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
-  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
   const { data: dbListings, isLoading } = useListings();
 
@@ -143,10 +141,7 @@ const Index = () => {
             </p>
           </div>
         ) : (
-          <ListingGrid
-            listings={sortedListings}
-            onListingClick={setSelectedListing}
-          />
+          <ListingGrid listings={sortedListings} />
         )}
       </main>
 
@@ -158,13 +153,6 @@ const Index = () => {
           </p>
         </div>
       </footer>
-
-      {/* Listing detail modal */}
-      <ListingDetail
-        listing={selectedListing}
-        open={!!selectedListing}
-        onClose={() => setSelectedListing(null)}
-      />
     </div>
   );
 };
