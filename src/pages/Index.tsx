@@ -38,6 +38,8 @@ const Index = () => {
       userId: l.user_id,
       lat: l.lat ?? undefined,
       lon: l.lon ?? undefined,
+      allowWhatsappContact: l.allow_whatsapp_contact ?? true,
+      showWhatsappPublic: l.show_whatsapp_public ?? false,
     }));
   }, [dbListings]);
 

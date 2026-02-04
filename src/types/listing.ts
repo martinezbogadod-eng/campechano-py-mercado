@@ -29,6 +29,8 @@ export interface Listing {
   userId: string;
   lat?: number;
   lon?: number;
+  allowWhatsappContact: boolean;
+  showWhatsappPublic: boolean;
 }
 
 export const CATEGORIES: Record<Category, { label: string; emoji: string }> = {

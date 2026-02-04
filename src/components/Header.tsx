@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield } from 'lucide-react';
+import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle } from 'lucide-react';
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -77,6 +77,10 @@ const Header = () => {
                     {user.email}
                   </div>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/perfil')}>
+                    <UserCircle className="mr-2 h-4 w-4" />
+                    Mi Perfil
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/mis-anuncios')}>
                     <FileText className="mr-2 h-4 w-4" />
                     Mis Anuncios

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, MapPin, Star, Phone, Calendar, ExternalLink, MessageCircle } from 'lucide-react';
+import { X, MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -13,6 +13,9 @@ import { Listing, CATEGORIES } from '@/types/listing';
 import { useAuth } from '@/hooks/useAuth';
 import ImageGallery from './ImageGallery';
 import ChatDialog from './ChatDialog';
+import SellerInfo from './SellerInfo';
+import TransactionButton from './TransactionButton';
+import { useNavigate } from 'react-router-dom';
 
 interface ListingDetailProps {
   listing: Listing | null;
@@ -48,18 +51,13 @@ const formatDate = (dateStr: string) => {
 const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
   const [chatOpen, setChatOpen] = useState(false);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   if (!listing) return null;
 
   const category = CATEGORIES[listing.category];
   const isOwnListing = user?.id === listing.userId;
-
-  const handleWhatsApp = () => {
-    const message = encodeURIComponent(
-      `Hola! Vi tu anuncio "${listing.title}" en Campechano Py y me interesa. ¿Podrías darme más información?`
-    );
-    window.open(`https://wa.me/${listing.phone}?text=${message}`, '_blank');
-  };
+  const showWhatsappPublic = listing.showWhatsappPublic && listing.allowWhatsappContact;
 
   const handleGoogleMaps = () => {
     let url: string;
@@ -72,10 +70,19 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
     window.open(url, '_blank');
   };
 
+  const handleContactClick = () => {
+    if (!user) {
+      navigate('/auth');
+      onClose();
+      return;
+    }
+    setChatOpen(true);
+  };
+
   return (
     <>
       <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0 bg-white border border-slate-200 shadow-lg rounded-xl">
+        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0 bg-card border border-border shadow-lg rounded-xl">
           <div className="relative">
             {/* Image Gallery */}
             <ImageGallery 
@@ -101,14 +108,14 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
             </Button>
           </div>
 
-          <div className="p-6 text-slate-900">
+          <div className="p-6 text-foreground">
             <DialogHeader className="mb-4 text-left">
               <div className="mb-2">
                 <Badge variant="secondary" className="text-sm">
                   {category.emoji} {category.label}
                 </Badge>
               </div>
-              <DialogTitle className="text-2xl font-bold leading-tight text-slate-900">
+              <DialogTitle className="text-2xl font-bold leading-tight text-foreground">
                 {listing.title}
               </DialogTitle>
             </DialogHeader>
@@ -117,7 +124,7 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
               {formatPrice(listing.price, listing.currency, listing.priceUnit)}
             </p>
 
-            <div className="mb-6 flex flex-wrap gap-4 text-sm text-slate-600">
+            <div className="mb-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
                 <span>
@@ -132,41 +139,69 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
 
             <Separator className="my-4" />
 
+            {/* Seller Info */}
             <div className="mb-6">
-              <h4 className="mb-2 text-lg font-semibold text-slate-900">Descripción</h4>
-              <p className="whitespace-pre-line text-slate-600">
+              <SellerInfo sellerId={listing.userId} />
+            </div>
+
+            <Separator className="my-4" />
+
+            <div className="mb-6">
+              <h4 className="mb-2 text-lg font-semibold text-foreground">Descripción</h4>
+              <p className="whitespace-pre-line text-muted-foreground">
                 {listing.description}
               </p>
             </div>
 
             <Separator className="my-4" />
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              {!isOwnListing && user && (
+            {/* Contact Actions */}
+            <div className="flex flex-col gap-3">
+              {!isOwnListing && (
                 <Button
-                  onClick={() => setChatOpen(true)}
-                  variant="outline"
-                  className="flex-1 gap-2"
+                  onClick={handleContactClick}
+                  className="w-full gap-2"
                 >
                   <MessageCircle className="h-5 w-5" />
-                  Enviar Mensaje
+                  {user ? 'Contactar al vendedor' : 'Iniciar sesión para contactar'}
                 </Button>
               )}
-              <Button
-                onClick={handleWhatsApp}
-                className="flex-1 gap-2 bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90"
-              >
-                <Phone className="h-5 w-5" />
-                Contactar por WhatsApp
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleGoogleMaps}
-                className="flex-1 gap-2"
-              >
-                <ExternalLink className="h-5 w-5" />
-                Ver en Google Maps
-              </Button>
+
+              {/* Only show public WhatsApp if enabled */}
+              {showWhatsappPublic && !isOwnListing && (
+                <p className="text-center text-xs text-muted-foreground">
+                  El vendedor permite contacto directo por WhatsApp desde el chat.
+                </p>
+              )}
+
+              {!showWhatsappPublic && !isOwnListing && (
+                <div className="flex items-center justify-center gap-2 rounded-lg bg-muted p-3 text-sm text-muted-foreground">
+                  <Lock className="h-4 w-4" />
+                  <span>
+                    Por seguridad, contactá primero por chat. 
+                    {listing.allowWhatsappContact && ' Podrás continuar por WhatsApp desde ahí.'}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={handleGoogleMaps}
+                  className="flex-1 gap-2"
+                >
+                  <ExternalLink className="h-5 w-5" />
+                  Ver en Mapa
+                </Button>
+
+                {user && !isOwnListing && (
+                  <TransactionButton
+                    listingId={listing.id}
+                    listingTitle={listing.title}
+                    sellerId={listing.userId}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </DialogContent>
@@ -180,7 +215,7 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
           listingId={listing.id}
           listingTitle={listing.title}
           sellerId={listing.userId}
-          sellerPhone={listing.phone}
+          sellerPhone={listing.allowWhatsappContact ? listing.phone : undefined}
         />
       )}
     </>
