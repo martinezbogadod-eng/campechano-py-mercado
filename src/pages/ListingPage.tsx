@@ -1,16 +1,33 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock, ArrowLeft, Share2 } from 'lucide-react';
+import { MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock, ArrowLeft, Share2, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import Header from '@/components/Header';
 import ImageGallery from '@/components/ImageGallery';
 import ChatDialog from '@/components/ChatDialog';
 import SellerInfo from '@/components/SellerInfo';
 import TransactionButton from '@/components/TransactionButton';
-import { useListings } from '@/hooks/useListings';
+import ListingForm from '@/components/ListingForm';
+import { useListings, useDeleteListing, DbListing } from '@/hooks/useListings';
 import { useAuth } from '@/hooks/useAuth';
 import { CATEGORIES, PriceUnit, Listing } from '@/types/listing';
 import { toast } from 'sonner';
@@ -45,37 +62,56 @@ const ListingPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [chatOpen, setChatOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   
   const { data: dbListings, isLoading } = useListings();
+  const deleteListing = useDeleteListing();
+
+  const dbListing: DbListing | null = useMemo(() => {
+    if (!dbListings || !id) return null;
+    return dbListings.find((l) => l.id === id) || null;
+  }, [dbListings, id]);
 
   const listing: Listing | null = useMemo(() => {
-    if (!dbListings || !id) return null;
-    const found = dbListings.find((l) => l.id === id);
-    if (!found) return null;
+    if (!dbListing) return null;
     
     return {
-      id: found.id,
-      title: found.title,
-      description: found.description,
-      price: found.price,
-      priceUnit: found.price_unit as PriceUnit | null,
-      currency: found.currency as 'PYG' | 'USD',
-      category: found.category,
-      department: found.department,
-      city: found.city,
-      phone: found.phone_whatsapp,
-      imageUrl: found.images?.[0] || `https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800&q=80`,
-      images: found.images || [],
-      featured: found.featured,
-      featuredUntil: found.featured_until,
-      createdAt: found.created_at,
-      userId: found.user_id,
-      lat: found.lat ?? undefined,
-      lon: found.lon ?? undefined,
-      allowWhatsappContact: found.allow_whatsapp_contact ?? true,
-      showWhatsappPublic: found.show_whatsapp_public ?? false,
+      id: dbListing.id,
+      title: dbListing.title,
+      description: dbListing.description,
+      price: dbListing.price,
+      priceUnit: dbListing.price_unit as PriceUnit | null,
+      currency: dbListing.currency as 'PYG' | 'USD',
+      category: dbListing.category,
+      department: dbListing.department,
+      city: dbListing.city,
+      phone: dbListing.phone_whatsapp,
+      imageUrl: dbListing.images?.[0] || `https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800&q=80`,
+      images: dbListing.images || [],
+      featured: dbListing.featured,
+      featuredUntil: dbListing.featured_until,
+      createdAt: dbListing.created_at,
+      userId: dbListing.user_id,
+      lat: dbListing.lat ?? undefined,
+      lon: dbListing.lon ?? undefined,
+      allowWhatsappContact: dbListing.allow_whatsapp_contact ?? true,
+      showWhatsappPublic: dbListing.show_whatsapp_public ?? false,
     };
-  }, [dbListings, id]);
+  }, [dbListing]);
+
+  const handleDelete = async () => {
+    if (!listing) return;
+    
+    try {
+      await deleteListing.mutateAsync(listing.id);
+      toast.success('Anuncio eliminado correctamente');
+      navigate('/');
+    } catch (error) {
+      toast.error('No se pudo eliminar el anuncio');
+    }
+    setDeleteOpen(false);
+  };
 
   if (isLoading) {
     return (
@@ -157,11 +193,26 @@ const ListingPage = () => {
       <Header />
       
       <main className="container py-6">
-        {/* Back button */}
-        <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Volver
-        </Button>
+        {/* Back button and owner actions */}
+        <div className="flex items-center justify-between mb-4">
+          <Button variant="ghost" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver
+          </Button>
+          
+          {isOwnListing && (
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
+                <Pencil className="h-4 w-4 mr-1" />
+                Editar
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setDeleteOpen(true)} className="text-destructive hover:text-destructive">
+                <Trash2 className="h-4 w-4 mr-1" />
+                Eliminar
+              </Button>
+            </div>
+          )}
+        </div>
 
         <div className="max-w-4xl mx-auto">
           {/* Image Gallery */}
@@ -294,6 +345,40 @@ const ListingPage = () => {
           sellerPhone={listing.allowWhatsappContact ? listing.phone : undefined}
         />
       )}
+
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar Anuncio</DialogTitle>
+          </DialogHeader>
+          {dbListing && (
+            <ListingForm
+              listing={dbListing}
+              onSuccess={() => setEditOpen(false)}
+              onCancel={() => setEditOpen(false)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar anuncio?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. El anuncio será eliminado permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
