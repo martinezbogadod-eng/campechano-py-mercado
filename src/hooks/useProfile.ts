@@ -12,6 +12,7 @@ export interface Profile {
   department: string | null;
   city: string | null;
   description: string | null;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 }
