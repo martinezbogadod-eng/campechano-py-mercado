@@ -28,6 +28,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { DEPARTMENTS } from '@/types/listing';
 import { ArrowLeft, Loader2, Star, Check, HandshakeIcon } from 'lucide-react';
+import AvatarUpload from '@/components/AvatarUpload';
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Mínimo 2 caracteres').max(100, 'Máximo 100 caracteres'),
@@ -56,6 +57,14 @@ const Profile = () => {
   } | null>(null);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  // Sync avatar URL when profile loads
+  useEffect(() => {
+    if (profile?.avatar_url) {
+      setAvatarUrl(profile.avatar_url);
+    }
+  }, [profile?.avatar_url]);
 
   const {
     register,
@@ -179,6 +188,13 @@ const Profile = () => {
           <div className="rounded-lg border bg-card p-6">
             <h1 className="mb-6 text-2xl font-bold text-foreground">Mi Perfil</h1>
 
+            <div className="mb-6">
+              <AvatarUpload
+                currentAvatarUrl={avatarUrl}
+                userName={watch('name') || profile?.name}
+                onAvatarChange={setAvatarUrl}
+              />
+            </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="name">Nombre o Razón Social *</Label>
