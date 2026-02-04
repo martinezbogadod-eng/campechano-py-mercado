@@ -20,6 +20,8 @@ export interface DbListing {
   featured_until: string | null;
   lat: number | null;
   lon: number | null;
+  allow_whatsapp_contact: boolean;
+  show_whatsapp_public: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -38,6 +40,8 @@ export interface ListingInsert {
   featured: boolean;
   lat?: number | null;
   lon?: number | null;
+  allow_whatsapp_contact?: boolean;
+  show_whatsapp_public?: boolean;
 }
 
 export function useListings() {

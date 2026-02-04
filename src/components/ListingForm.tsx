@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -17,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useCreateListing, useUpdateListing, uploadListingImage, DbListing } from '@/hooks/useListings';
 import { CATEGORIES, DEPARTMENTS, Category, PRICE_UNITS, PriceUnit } from '@/types/listing';
-import { Loader2, Upload, X } from 'lucide-react';
+import { Loader2, Upload, X, Shield } from 'lucide-react';
 
 const listingSchema = z.object({
   title: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
@@ -47,6 +48,12 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
   );
   const [selectedPriceUnit, setSelectedPriceUnit] = useState<PriceUnit | ''>(
     (listing?.price_unit as PriceUnit) || ''
+  );
+  const [allowWhatsapp, setAllowWhatsapp] = useState(
+    listing?.allow_whatsapp_contact ?? true
+  );
+  const [showWhatsappPublic, setShowWhatsappPublic] = useState(
+    listing?.show_whatsapp_public ?? false
   );
   
   const { user } = useAuth();
@@ -149,7 +156,9 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         city: data.city,
         phone_whatsapp: data.phone_whatsapp,
         images,
-        featured: false, // Users can't set featured directly anymore
+        featured: false,
+        allow_whatsapp_contact: allowWhatsapp,
+        show_whatsapp_public: showWhatsappPublic,
       };
 
       if (listing) {
@@ -344,6 +353,48 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         {errors.phone_whatsapp && (
           <p className="text-sm text-destructive">{errors.phone_whatsapp.message}</p>
         )}
+      </div>
+
+      {/* Privacy Settings */}
+      <div className="space-y-4 rounded-lg border bg-muted/50 p-4">
+        <div className="flex items-center gap-2">
+          <Shield className="h-5 w-5 text-primary" />
+          <h4 className="font-semibold">Configuración de Privacidad</h4>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <div className="space-y-0.5">
+            <Label htmlFor="allow-whatsapp">Permitir contacto por WhatsApp</Label>
+            <p className="text-xs text-muted-foreground">
+              Los interesados podrán contactarte por WhatsApp desde el chat
+            </p>
+          </div>
+          <Switch
+            id="allow-whatsapp"
+            checked={allowWhatsapp}
+            onCheckedChange={setAllowWhatsapp}
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div className="space-y-0.5">
+            <Label htmlFor="show-whatsapp-public">Mostrar WhatsApp públicamente</Label>
+            <p className="text-xs text-muted-foreground">
+              Mostrar botón de WhatsApp en el anuncio sin necesidad de chat
+            </p>
+          </div>
+          <Switch
+            id="show-whatsapp-public"
+            checked={showWhatsappPublic}
+            onCheckedChange={setShowWhatsappPublic}
+            disabled={!allowWhatsapp}
+          />
+        </div>
+
+        <p className="text-xs text-muted-foreground italic">
+          Por seguridad, los teléfonos no se muestran como texto. 
+          El contacto inicial siempre es por chat interno.
+        </p>
       </div>
 
       {/* Images */}

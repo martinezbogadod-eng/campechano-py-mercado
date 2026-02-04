@@ -60,6 +60,7 @@ export type Database = {
       }
       listings: {
         Row: {
+          allow_whatsapp_contact: boolean
           category: Database["public"]["Enums"]["listing_category"]
           city: string
           created_at: string
@@ -75,11 +76,13 @@ export type Database = {
           phone_whatsapp: string
           price: number | null
           price_unit: string | null
+          show_whatsapp_public: boolean
           title: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          allow_whatsapp_contact?: boolean
           category: Database["public"]["Enums"]["listing_category"]
           city: string
           created_at?: string
@@ -95,11 +98,13 @@ export type Database = {
           phone_whatsapp: string
           price?: number | null
           price_unit?: string | null
+          show_whatsapp_public?: boolean
           title: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          allow_whatsapp_contact?: boolean
           category?: Database["public"]["Enums"]["listing_category"]
           city?: string
           created_at?: string
@@ -115,6 +120,7 @@ export type Database = {
           phone_whatsapp?: string
           price?: number | null
           price_unit?: string | null
+          show_whatsapp_public?: boolean
           title?: string
           updated_at?: string
           user_id?: string
@@ -161,27 +167,127 @@ export type Database = {
       }
       profiles: {
         Row: {
+          city: string | null
           created_at: string
+          department: string | null
+          description: string | null
           id: string
           name: string | null
           phone_whatsapp: string | null
+          profile_type: Database["public"]["Enums"]["profile_type"] | null
           updated_at: string
         }
         Insert: {
+          city?: string | null
           created_at?: string
+          department?: string | null
+          description?: string | null
           id: string
           name?: string | null
           phone_whatsapp?: string | null
+          profile_type?: Database["public"]["Enums"]["profile_type"] | null
           updated_at?: string
         }
         Update: {
+          city?: string | null
           created_at?: string
+          department?: string | null
+          description?: string | null
           id?: string
           name?: string | null
           phone_whatsapp?: string | null
+          profile_type?: Database["public"]["Enums"]["profile_type"] | null
           updated_at?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          reviewed_id: string
+          reviewer_id: string
+          transaction_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          reviewed_id: string
+          reviewer_id: string
+          transaction_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          reviewed_id?: string
+          reviewer_id?: string
+          transaction_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          admin_validated: boolean | null
+          buyer_confirmed: boolean | null
+          buyer_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          listing_id: string | null
+          notes: string | null
+          seller_confirmed: boolean | null
+          seller_id: string
+          status: string
+        }
+        Insert: {
+          admin_validated?: boolean | null
+          buyer_confirmed?: boolean | null
+          buyer_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          listing_id?: string | null
+          notes?: string | null
+          seller_confirmed?: boolean | null
+          seller_id: string
+          status?: string
+        }
+        Update: {
+          admin_validated?: boolean | null
+          buyer_confirmed?: boolean | null
+          buyer_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          listing_id?: string | null
+          notes?: string | null
+          seller_confirmed?: boolean | null
+          seller_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -226,6 +332,7 @@ export type Database = {
         | "maquinaria"
         | "insumos"
         | "servicios"
+      profile_type: "productor" | "tecnico" | "proveedor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -362,6 +469,7 @@ export const Constants = {
         "insumos",
         "servicios",
       ],
+      profile_type: ["productor", "tecnico", "proveedor"],
     },
   },
 } as const
