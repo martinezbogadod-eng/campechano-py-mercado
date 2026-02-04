@@ -42,12 +42,12 @@ const AvatarUpload = ({ currentAvatarUrl, userName, onAvatarChange }: AvatarUplo
       return;
     }
 
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'La imagen no debe superar 2MB',
+        description: 'La imagen no debe superar 5MB',
       });
       return;
     }
