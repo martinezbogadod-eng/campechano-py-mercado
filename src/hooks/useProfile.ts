@@ -21,6 +21,7 @@ export interface ProfileWithStats extends Profile {
   avgRating: number;
   reviewCount: number;
   completedOperations: number;
+  avatar_url: string | null;
 }
 
 export const PROFILE_TYPES: Record<ProfileType, { label: string; emoji: string }> = {
