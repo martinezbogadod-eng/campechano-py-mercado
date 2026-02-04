@@ -2,6 +2,7 @@ import { MapPin, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Listing, CATEGORIES } from '@/types/listing';
+import { getOptimizedImageUrl } from '@/lib/imageUtils';
 
 interface ListingCardProps {
   listing: Listing;
@@ -34,8 +35,10 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
-          src={listing.imageUrl}
+          src={getOptimizedImageUrl(listing.imageUrl, 400)}
           alt={listing.title}
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {listing.featured && (
