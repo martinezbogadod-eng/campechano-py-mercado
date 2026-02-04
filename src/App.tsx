@@ -11,6 +11,7 @@ import MyListings from "./pages/MyListings";
 import Messages from "./pages/Messages";
 import AdminPanel from "./pages/AdminPanel";
 import Profile from "./pages/Profile";
+import ListingPage from "./pages/ListingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/mensajes" element={<Messages />} />
             <Route path="/perfil" element={<Profile />} />
             <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/anuncio/:id" element={<ListingPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
