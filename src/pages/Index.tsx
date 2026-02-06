@@ -38,6 +38,9 @@ const Index = () => {
       lon: l.lon ?? undefined,
       allowWhatsappContact: l.allow_whatsapp_contact ?? true,
       showWhatsappPublic: l.show_whatsapp_public ?? false,
+      isWholesale: l.is_wholesale ?? false,
+      minVolume: l.min_volume ?? null,
+      productionCapacity: l.production_capacity ?? null,
     }));
   }, [dbListings]);
 

@@ -24,6 +24,10 @@ export interface DbListing {
   show_whatsapp_public: boolean;
   created_at: string;
   updated_at: string;
+  // Wholesale fields
+  is_wholesale: boolean;
+  min_volume: string | null;
+  production_capacity: string | null;
 }
 
 export interface ListingInsert {
@@ -42,6 +46,10 @@ export interface ListingInsert {
   lon?: number | null;
   allow_whatsapp_contact?: boolean;
   show_whatsapp_public?: boolean;
+  // Wholesale fields
+  is_wholesale?: boolean;
+  min_volume?: string | null;
+  production_capacity?: string | null;
 }
 
 export function useListings() {
