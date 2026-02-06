@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { Language } from '@/i18n/translations';
 
 export type ProfileType = 'productor' | 'tecnico' | 'proveedor';
 
@@ -13,6 +14,7 @@ export interface Profile {
   city: string | null;
   description: string | null;
   avatar_url: string | null;
+  preferred_language: Language | null;
   created_at: string;
   updated_at: string;
 }

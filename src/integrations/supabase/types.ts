@@ -175,6 +175,7 @@ export type Database = {
           id: string
           name: string | null
           phone_whatsapp: string | null
+          preferred_language: string | null
           profile_type: Database["public"]["Enums"]["profile_type"] | null
           updated_at: string
         }
@@ -187,6 +188,7 @@ export type Database = {
           id: string
           name?: string | null
           phone_whatsapp?: string | null
+          preferred_language?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"] | null
           updated_at?: string
         }
@@ -199,6 +201,7 @@ export type Database = {
           id?: string
           name?: string | null
           phone_whatsapp?: string | null
+          preferred_language?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"] | null
           updated_at?: string
         }
@@ -318,6 +321,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_roles: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"][]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -327,7 +334,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "user" | "admin"
+      app_role: "consumidor" | "productor" | "prestador" | "admin"
       listing_category:
         | "granos"
         | "frutas-verduras"
@@ -463,7 +470,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["user", "admin"],
+      app_role: ["consumidor", "productor", "prestador", "admin"],
       listing_category: [
         "granos",
         "frutas-verduras",
