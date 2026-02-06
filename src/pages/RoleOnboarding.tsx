@@ -42,11 +42,12 @@ export default function RoleOnboarding() {
     try {
       await setUserRoles.mutateAsync(selectedRoles);
       navigate('/');
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : t('common.error');
       toast({
         variant: 'destructive',
         title: t('common.error'),
-        description: String(error),
+        description: message,
       });
     }
   };
