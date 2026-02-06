@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useIsAdmin } from '@/hooks/useAdmin';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useUserRoles } from '@/hooks/useUserRoles';
 import { useConversations } from '@/hooks/useMessages';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import LanguageSelector from '@/components/LanguageSelector';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,10 +17,13 @@ import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle }
 
 const Header = () => {
   const { user, signOut } = useAuth();
-  const { data: isAdmin } = useIsAdmin();
+  const { t } = useLanguage();
+  const { data: roles } = useUserRoles();
   const { data: conversations } = useConversations();
   const navigate = useNavigate();
 
+  const isAdmin = roles?.includes('admin') || false;
+  const canPublish = roles?.includes('productor') || roles?.includes('prestador') || isAdmin;
   const unreadCount = conversations?.reduce((sum, c) => sum + c.unreadCount, 0) || 0;
 
   const handleSignOut = async () => {
@@ -35,15 +40,17 @@ const Header = () => {
           </div>
           <div className="flex flex-col">
             <span className="text-lg font-bold leading-tight text-foreground">
-              Campechano Py
+              Kamps Py
             </span>
             <span className="text-xs font-medium text-muted-foreground">
-              Mercado Agrícola Local
+              {t('header.subtitle')}
             </span>
           </div>
         </Link>
 
         <div className="flex items-center gap-2">
+          <LanguageSelector />
+          
           {user ? (
             <>
               {/* Messages button */}
@@ -61,10 +68,13 @@ const Header = () => {
                 )}
               </Button>
 
-              <Button onClick={() => navigate('/publicar')} size="sm">
-                <Plus className="mr-1 h-4 w-4" />
-                <span className="hidden sm:inline">Publicar</span>
-              </Button>
+              {/* Show publish button only for producers/service providers */}
+              {canPublish && (
+                <Button onClick={() => navigate('/publicar')} size="sm">
+                  <Plus className="mr-1 h-4 w-4" />
+                  <span className="hidden sm:inline">{t('header.publish')}</span>
+                </Button>
+              )}
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -76,18 +86,25 @@ const Header = () => {
                   <div className="px-2 py-1.5 text-sm font-medium">
                     {user.email}
                   </div>
+                  {roles && roles.length > 0 && (
+                    <div className="px-2 py-1 text-xs text-muted-foreground">
+                      {roles.filter(r => r !== 'admin').map(r => t(`role.${r}`)).join(', ')}
+                    </div>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/perfil')}>
                     <UserCircle className="mr-2 h-4 w-4" />
-                    Mi Perfil
+                    {t('header.myProfile')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/mis-anuncios')}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Mis Anuncios
-                  </DropdownMenuItem>
+                  {canPublish && (
+                    <DropdownMenuItem onClick={() => navigate('/mis-anuncios')}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      {t('header.myListings')}
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={() => navigate('/mensajes')}>
                     <MessageCircle className="mr-2 h-4 w-4" />
-                    Mensajes
+                    {t('header.messages')}
                     {unreadCount > 0 && (
                       <Badge className="ml-auto bg-accent text-accent-foreground">
                         {unreadCount}
@@ -99,14 +116,14 @@ const Header = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate('/admin')}>
                         <Shield className="mr-2 h-4 w-4" />
-                        Panel Admin
+                        {t('header.adminPanel')}
                       </DropdownMenuItem>
                     </>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    Cerrar Sesión
+                    {t('header.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -114,11 +131,11 @@ const Header = () => {
           ) : (
             <>
               <Button variant="outline" onClick={() => navigate('/auth')} size="sm">
-                Ingresar
+                {t('header.login')}
               </Button>
               <Button onClick={() => navigate('/auth')} size="sm">
                 <Plus className="mr-1 h-4 w-4" />
-                <span className="hidden sm:inline">Publicar</span>
+                <span className="hidden sm:inline">{t('header.publish')}</span>
               </Button>
             </>
           )}
