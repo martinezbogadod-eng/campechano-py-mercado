@@ -18,10 +18,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'header.adminPanel': 'Panel Admin',
     'header.logout': 'Cerrar Sesión',
     'header.subtitle': 'Mercado Agrícola Digital',
+    'header.changeRole': 'Cambiar Perfil',
     
     // Roles
     'role.consumidor': 'Consumidor',
     'role.productor': 'Productor',
+    'role.productor_minorista': 'Productor Minorista',
+    'role.productor_mayorista': 'Productor Mayorista',
     'role.prestador': 'Prestador de Servicios',
     'role.admin': 'Administrador',
     
@@ -30,6 +33,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'onboarding.subtitle': 'Puedes elegir uno o más roles',
     'onboarding.consumidor.desc': 'Quiero comprar productos y servicios agrícolas',
     'onboarding.productor.desc': 'Quiero vender mis productos agrícolas',
+    'onboarding.productor_minorista.desc': 'Vendo productos en pequeñas cantidades',
+    'onboarding.productor_mayorista.desc': 'Vendo productos en grandes volúmenes',
     'onboarding.prestador.desc': 'Ofrezco servicios técnicos o profesionales',
     'onboarding.continue': 'Continuar',
     'onboarding.selectOne': 'Selecciona al menos un rol',
@@ -52,6 +57,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'listing.deleteConfirm': '¿Estás seguro de que quieres eliminar este anuncio?',
     'listing.deleteDesc': 'Esta acción no se puede deshacer.',
     'listing.cancel': 'Cancelar',
+    'listing.wholesale': 'Mayorista',
+    'listing.minVolume': 'Volumen mínimo',
+    'listing.productionCapacity': 'Capacidad productiva',
     
     // Search
     'search.placeholder': 'Buscar productos, servicios...',
@@ -86,6 +94,20 @@ export const translations: Record<Language, Record<string, string>> = {
     'common.error': 'Error',
     'common.success': 'Éxito',
     'common.noResults': 'No se encontraron resultados',
+    
+    // Form - Wholesale fields
+    'form.wholesaleInfo': 'Información Mayorista',
+    'form.minVolume': 'Volumen mínimo de venta',
+    'form.minVolumePlaceholder': 'Ej: 1000 kg, 50 cajas',
+    'form.productionCapacity': 'Capacidad de producción aproximada',
+    'form.productionCapacityPlaceholder': 'Ej: 10 toneladas/mes',
+    
+    // Chat
+    'chat.contactProducer': 'Contactar Productor',
+    'chat.continueWhatsapp': 'Continuar por WhatsApp',
+    'chat.startConversation': 'Inicia la conversación',
+    'chat.writeMessage': 'Escribe un mensaje al vendedor',
+    'chat.messagePlaceholder': 'Escribe un mensaje...',
   },
   
   pt: {
@@ -98,10 +120,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'header.adminPanel': 'Painel Admin',
     'header.logout': 'Sair',
     'header.subtitle': 'Mercado Agrícola Digital',
+    'header.changeRole': 'Alterar Perfil',
     
     // Roles
     'role.consumidor': 'Consumidor',
     'role.productor': 'Produtor',
+    'role.productor_minorista': 'Produtor Varejista',
+    'role.productor_mayorista': 'Produtor Atacadista',
     'role.prestador': 'Prestador de Serviços',
     'role.admin': 'Administrador',
     
@@ -110,6 +135,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'onboarding.subtitle': 'Você pode escolher um ou mais papéis',
     'onboarding.consumidor.desc': 'Quero comprar produtos e serviços agrícolas',
     'onboarding.productor.desc': 'Quero vender meus produtos agrícolas',
+    'onboarding.productor_minorista.desc': 'Vendo produtos em pequenas quantidades',
+    'onboarding.productor_mayorista.desc': 'Vendo produtos em grandes volumes',
     'onboarding.prestador.desc': 'Ofereço serviços técnicos ou profissionais',
     'onboarding.continue': 'Continuar',
     'onboarding.selectOne': 'Selecione pelo menos um papel',
@@ -132,6 +159,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'listing.deleteConfirm': 'Tem certeza que deseja excluir este anúncio?',
     'listing.deleteDesc': 'Esta ação não pode ser desfeita.',
     'listing.cancel': 'Cancelar',
+    'listing.wholesale': 'Atacado',
+    'listing.minVolume': 'Volume mínimo',
+    'listing.productionCapacity': 'Capacidade produtiva',
     
     // Search
     'search.placeholder': 'Buscar produtos, serviços...',
@@ -166,6 +196,20 @@ export const translations: Record<Language, Record<string, string>> = {
     'common.error': 'Erro',
     'common.success': 'Sucesso',
     'common.noResults': 'Nenhum resultado encontrado',
+    
+    // Form - Wholesale fields
+    'form.wholesaleInfo': 'Informações de Atacado',
+    'form.minVolume': 'Volume mínimo de venda',
+    'form.minVolumePlaceholder': 'Ex: 1000 kg, 50 caixas',
+    'form.productionCapacity': 'Capacidade de produção aproximada',
+    'form.productionCapacityPlaceholder': 'Ex: 10 toneladas/mês',
+    
+    // Chat
+    'chat.contactProducer': 'Contatar Produtor',
+    'chat.continueWhatsapp': 'Continuar pelo WhatsApp',
+    'chat.startConversation': 'Inicie a conversa',
+    'chat.writeMessage': 'Escreva uma mensagem ao vendedor',
+    'chat.messagePlaceholder': 'Escreva uma mensagem...',
   },
   
   en: {
@@ -178,10 +222,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'header.adminPanel': 'Admin Panel',
     'header.logout': 'Logout',
     'header.subtitle': 'Digital Agricultural Market',
+    'header.changeRole': 'Change Profile',
     
     // Roles
     'role.consumidor': 'Consumer',
     'role.productor': 'Producer',
+    'role.productor_minorista': 'Retail Producer',
+    'role.productor_mayorista': 'Wholesale Producer',
     'role.prestador': 'Service Provider',
     'role.admin': 'Administrator',
     
@@ -190,6 +237,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'onboarding.subtitle': 'You can choose one or more roles',
     'onboarding.consumidor.desc': 'I want to buy agricultural products and services',
     'onboarding.productor.desc': 'I want to sell my agricultural products',
+    'onboarding.productor_minorista.desc': 'I sell products in small quantities',
+    'onboarding.productor_mayorista.desc': 'I sell products in large volumes',
     'onboarding.prestador.desc': 'I offer technical or professional services',
     'onboarding.continue': 'Continue',
     'onboarding.selectOne': 'Select at least one role',
@@ -212,6 +261,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'listing.deleteConfirm': 'Are you sure you want to delete this listing?',
     'listing.deleteDesc': 'This action cannot be undone.',
     'listing.cancel': 'Cancel',
+    'listing.wholesale': 'Wholesale',
+    'listing.minVolume': 'Minimum volume',
+    'listing.productionCapacity': 'Production capacity',
     
     // Search
     'search.placeholder': 'Search products, services...',
@@ -246,6 +298,20 @@ export const translations: Record<Language, Record<string, string>> = {
     'common.error': 'Error',
     'common.success': 'Success',
     'common.noResults': 'No results found',
+    
+    // Form - Wholesale fields
+    'form.wholesaleInfo': 'Wholesale Information',
+    'form.minVolume': 'Minimum sale volume',
+    'form.minVolumePlaceholder': 'E.g.: 1000 kg, 50 boxes',
+    'form.productionCapacity': 'Approximate production capacity',
+    'form.productionCapacityPlaceholder': 'E.g.: 10 tons/month',
+    
+    // Chat
+    'chat.contactProducer': 'Contact Producer',
+    'chat.continueWhatsapp': 'Continue on WhatsApp',
+    'chat.startConversation': 'Start the conversation',
+    'chat.writeMessage': 'Write a message to the seller',
+    'chat.messagePlaceholder': 'Write a message...',
   },
   
   zh: {
@@ -258,10 +324,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'header.adminPanel': '管理面板',
     'header.logout': '退出',
     'header.subtitle': '数字农业市场',
+    'header.changeRole': '更改资料',
     
     // Roles
     'role.consumidor': '消费者',
     'role.productor': '生产者',
+    'role.productor_minorista': '零售生产者',
+    'role.productor_mayorista': '批发生产者',
     'role.prestador': '服务提供商',
     'role.admin': '管理员',
     
@@ -270,6 +339,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'onboarding.subtitle': '您可以选择一个或多个角色',
     'onboarding.consumidor.desc': '我想购买农产品和服务',
     'onboarding.productor.desc': '我想出售我的农产品',
+    'onboarding.productor_minorista.desc': '我小批量销售产品',
+    'onboarding.productor_mayorista.desc': '我大批量销售产品',
     'onboarding.prestador.desc': '我提供技术或专业服务',
     'onboarding.continue': '继续',
     'onboarding.selectOne': '请至少选择一个角色',
@@ -292,6 +363,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'listing.deleteConfirm': '您确定要删除此广告吗？',
     'listing.deleteDesc': '此操作无法撤消。',
     'listing.cancel': '取消',
+    'listing.wholesale': '批发',
+    'listing.minVolume': '最小数量',
+    'listing.productionCapacity': '生产能力',
     
     // Search
     'search.placeholder': '搜索产品、服务...',
@@ -326,5 +400,19 @@ export const translations: Record<Language, Record<string, string>> = {
     'common.error': '错误',
     'common.success': '成功',
     'common.noResults': '未找到结果',
+    
+    // Form - Wholesale fields
+    'form.wholesaleInfo': '批发信息',
+    'form.minVolume': '最小销售量',
+    'form.minVolumePlaceholder': '例如：1000公斤，50箱',
+    'form.productionCapacity': '大约生产能力',
+    'form.productionCapacityPlaceholder': '例如：每月10吨',
+    
+    // Chat
+    'chat.contactProducer': '联系生产者',
+    'chat.continueWhatsapp': '继续使用WhatsApp',
+    'chat.startConversation': '开始对话',
+    'chat.writeMessage': '给卖家写消息',
+    'chat.messagePlaceholder': '写一条消息...',
   },
 };

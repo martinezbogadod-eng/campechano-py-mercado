@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useUserRoles } from '@/hooks/useUserRoles';
+import { useUserRoles, useCanPublish, ROLE_INFO, SelectableRole } from '@/hooks/useUserRoles';
 import { useConversations } from '@/hooks/useMessages';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,18 +13,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle } from 'lucide-react';
+import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle, RefreshCw } from 'lucide-react';
 
 const Header = () => {
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
   const { data: roles } = useUserRoles();
   const { data: conversations } = useConversations();
+  const canPublish = useCanPublish();
   const navigate = useNavigate();
 
   const isAdmin = roles?.includes('admin') || false;
-  const canPublish = roles?.includes('productor') || roles?.includes('prestador') || isAdmin;
   const unreadCount = conversations?.reduce((sum, c) => sum + c.unreadCount, 0) || 0;
+
+  // Get display roles (exclude admin for display)
+  const displayRoles = roles?.filter(r => r !== 'admin' && r !== 'productor') as SelectableRole[] | undefined;
 
   const handleSignOut = async () => {
     await signOut();
@@ -86,15 +89,29 @@ const Header = () => {
                   <div className="px-2 py-1.5 text-sm font-medium">
                     {user.email}
                   </div>
-                  {roles && roles.length > 0 && (
-                    <div className="px-2 py-1 text-xs text-muted-foreground">
-                      {roles.filter(r => r !== 'admin').map(r => t(`role.${r}`)).join(', ')}
+                  {displayRoles && displayRoles.length > 0 && (
+                    <div className="px-2 py-1 flex flex-wrap gap-1">
+                      {displayRoles.map(r => {
+                        const info = ROLE_INFO[r];
+                        return (
+                          <span 
+                            key={r} 
+                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ${info?.color || 'bg-muted text-muted-foreground'}`}
+                          >
+                            {info?.emoji} {t(`role.${r}`)}
+                          </span>
+                        );
+                      })}
                     </div>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/perfil')}>
                     <UserCircle className="mr-2 h-4 w-4" />
                     {t('header.myProfile')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/onboarding')}>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    {t('header.changeRole')}
                   </DropdownMenuItem>
                   {canPublish && (
                     <DropdownMenuItem onClick={() => navigate('/mis-anuncios')}>

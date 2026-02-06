@@ -1,8 +1,9 @@
-import { MapPin, Star } from 'lucide-react';
+import { MapPin, Star, Package } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Listing, CATEGORIES } from '@/types/listing';
 import { getOptimizedImageUrl } from '@/lib/imageUtils';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface ListingCardProps {
   listing: Listing;
@@ -27,6 +28,7 @@ const formatPrice = (price: number | null, currency: 'PYG' | 'USD', priceUnit: s
 
 const ListingCard = ({ listing, onClick }: ListingCardProps) => {
   const category = CATEGORIES[listing.category];
+  const { t } = useLanguage();
 
   return (
     <Card
@@ -41,14 +43,20 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
           decoding="async"
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        {listing.featured && (
-          <div className="absolute left-2 top-2">
+        <div className="absolute left-2 top-2 flex flex-col gap-1">
+          {listing.featured && (
             <Badge className="gap-1 bg-featured text-featured-foreground">
               <Star className="h-3 w-3 fill-current" />
-              Destacado
+              {t('listing.featured')}
             </Badge>
-          </div>
-        )}
+          )}
+          {listing.isWholesale && (
+            <Badge className="gap-1 bg-emerald-600 text-white">
+              <Package className="h-3 w-3" />
+              {t('listing.wholesale')}
+            </Badge>
+          )}
+        </div>
         <div className="absolute right-2 top-2">
           <Badge variant="secondary" className="text-sm">
             {category.emoji} {category.label}
@@ -62,6 +70,11 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
         <p className="mb-3 text-xl font-bold text-primary">
           {formatPrice(listing.price, listing.currency, listing.priceUnit)}
         </p>
+        {listing.isWholesale && listing.minVolume && (
+          <p className="mb-2 text-xs text-muted-foreground">
+            📦 {t('listing.minVolume')}: {listing.minVolume}
+          </p>
+        )}
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" />
           <span>

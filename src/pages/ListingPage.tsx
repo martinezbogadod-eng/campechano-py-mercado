@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock, ArrowLeft, Share2, Pencil, Trash2 } from 'lucide-react';
+import { MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock, ArrowLeft, Share2, Pencil, Trash2, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -97,6 +97,9 @@ const ListingPage = () => {
       lon: dbListing.lon ?? undefined,
       allowWhatsappContact: dbListing.allow_whatsapp_contact ?? true,
       showWhatsappPublic: dbListing.show_whatsapp_public ?? false,
+      isWholesale: dbListing.is_wholesale ?? false,
+      minVolume: dbListing.min_volume ?? null,
+      productionCapacity: dbListing.production_capacity ?? null,
     };
   }, [dbListing]);
 
@@ -232,6 +235,12 @@ const ListingPage = () => {
                   Destacado
                 </Badge>
               )}
+              {listing.isWholesale && (
+                <Badge className="gap-1 bg-emerald-600 text-white">
+                  <Package className="h-3 w-3" />
+                  Mayorista
+                </Badge>
+              )}
               <Badge variant="secondary" className="text-sm">
                 {category.emoji} {category.label}
               </Badge>
@@ -246,6 +255,24 @@ const ListingPage = () => {
             <p className="text-3xl font-bold text-primary mb-4">
               {formatPrice(listing.price, listing.currency, listing.priceUnit)}
             </p>
+
+            {/* Wholesale Info */}
+            {listing.isWholesale && (listing.minVolume || listing.productionCapacity) && (
+              <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-950/30">
+                <h3 className="mb-2 flex items-center gap-2 font-semibold text-emerald-800 dark:text-emerald-300">
+                  <Package className="h-4 w-4" />
+                  Información Mayorista
+                </h3>
+                <div className="space-y-1 text-sm text-emerald-700 dark:text-emerald-400">
+                  {listing.minVolume && (
+                    <p>📦 <strong>Volumen mínimo:</strong> {listing.minVolume}</p>
+                  )}
+                  {listing.productionCapacity && (
+                    <p>🏭 <strong>Capacidad productiva:</strong> {listing.productionCapacity}</p>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Location & Date */}
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">

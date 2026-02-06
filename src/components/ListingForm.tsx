@@ -16,9 +16,11 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsWholesale } from '@/hooks/useUserRoles';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useCreateListing, useUpdateListing, uploadListingImage, DbListing } from '@/hooks/useListings';
 import { CATEGORIES, DEPARTMENTS, Category, PRICE_UNITS, PriceUnit } from '@/types/listing';
-import { Loader2, Upload, X, Shield } from 'lucide-react';
+import { Loader2, Upload, X, Shield, Package } from 'lucide-react';
 
 const listingSchema = z.object({
   title: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
@@ -30,6 +32,9 @@ const listingSchema = z.object({
   department: z.string().min(1, 'Selecciona un departamento'),
   city: z.string().min(2, 'Mínimo 2 caracteres').max(50, 'Máximo 50 caracteres'),
   phone_whatsapp: z.string().regex(/^595\d{9}$/, 'Formato: 595XXXXXXXXX'),
+  // Wholesale fields
+  min_volume: z.string().optional(),
+  production_capacity: z.string().optional(),
 });
 
 type ListingFormData = z.infer<typeof listingSchema>;
@@ -55,9 +60,14 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
   const [showWhatsappPublic, setShowWhatsappPublic] = useState(
     listing?.show_whatsapp_public ?? false
   );
+  const [isWholesaleListing, setIsWholesaleListing] = useState(
+    listing?.is_wholesale ?? false
+  );
   
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
+  const isWholesaleUser = useIsWholesale();
   const createListing = useCreateListing();
   const updateListing = useUpdateListing();
 
@@ -79,6 +89,8 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
       department: listing?.department || '',
       city: listing?.city || '',
       phone_whatsapp: listing?.phone_whatsapp || '',
+      min_volume: listing?.min_volume || '',
+      production_capacity: listing?.production_capacity || '',
     },
   });
 
@@ -159,6 +171,10 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         featured: false,
         allow_whatsapp_contact: allowWhatsapp,
         show_whatsapp_public: showWhatsappPublic,
+        // Wholesale fields
+        is_wholesale: isWholesaleUser && isWholesaleListing,
+        min_volume: isWholesaleUser && isWholesaleListing ? data.min_volume || null : null,
+        production_capacity: isWholesaleUser && isWholesaleListing ? data.production_capacity || null : null,
       };
 
       if (listing) {
@@ -324,6 +340,52 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
           </div>
         )}
       </div>
+
+      {/* Wholesale Settings - Only for wholesale producers */}
+      {isWholesaleUser && (
+        <div className="space-y-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-950/30">
+          <div className="flex items-center gap-2">
+            <Package className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <h4 className="font-semibold text-emerald-800 dark:text-emerald-300">{t('form.wholesaleInfo')}</h4>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="is-wholesale">Publicar como mayorista</Label>
+              <p className="text-xs text-muted-foreground">
+                Mostrar etiqueta "Mayorista" y campos adicionales
+              </p>
+            </div>
+            <Switch
+              id="is-wholesale"
+              checked={isWholesaleListing}
+              onCheckedChange={setIsWholesaleListing}
+            />
+          </div>
+
+          {isWholesaleListing && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="min_volume">{t('form.minVolume')}</Label>
+                <Input
+                  id="min_volume"
+                  placeholder={t('form.minVolumePlaceholder')}
+                  {...register('min_volume')}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="production_capacity">{t('form.productionCapacity')}</Label>
+                <Input
+                  id="production_capacity"
+                  placeholder={t('form.productionCapacityPlaceholder')}
+                  {...register('production_capacity')}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Description */}
       <div className="space-y-2">

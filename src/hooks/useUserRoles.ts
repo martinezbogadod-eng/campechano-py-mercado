@@ -2,13 +2,27 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
-export type AppRole = 'consumidor' | 'productor' | 'prestador' | 'admin';
+export type AppRole = 'consumidor' | 'productor' | 'productor_minorista' | 'productor_mayorista' | 'prestador' | 'admin';
 
-export const ROLE_INFO: Record<Exclude<AppRole, 'admin'>, { emoji: string; color: string }> = {
-  consumidor: { emoji: '🛒', color: 'bg-blue-100 text-blue-800' },
-  productor: { emoji: '🌾', color: 'bg-green-100 text-green-800' },
-  prestador: { emoji: '🔧', color: 'bg-orange-100 text-orange-800' },
+// Non-admin roles that users can select during onboarding
+export type SelectableRole = Exclude<AppRole, 'admin' | 'productor'>;
+
+export const ROLE_INFO: Record<SelectableRole, { emoji: string; color: string; label: string }> = {
+  consumidor: { emoji: '🛒', color: 'bg-blue-100 text-blue-800', label: 'Consumidor' },
+  productor_minorista: { emoji: '🌱', color: 'bg-green-100 text-green-800', label: 'Productor Minorista' },
+  productor_mayorista: { emoji: '🌾', color: 'bg-emerald-100 text-emerald-800', label: 'Productor Mayorista' },
+  prestador: { emoji: '🔧', color: 'bg-orange-100 text-orange-800', label: 'Prestador de Servicios' },
 };
+
+// Helper to check if user has any producer role
+export function isProducerRole(role: AppRole): boolean {
+  return role === 'productor' || role === 'productor_minorista' || role === 'productor_mayorista';
+}
+
+// Helper to check if user is a wholesale producer
+export function isWholesaleProducer(roles: AppRole[]): boolean {
+  return roles.includes('productor_mayorista');
+}
 
 export function useUserRoles() {
   const { user } = useAuth();
@@ -39,6 +53,22 @@ export function useIsAdmin() {
   return useHasRole('admin');
 }
 
+export function useIsProducer() {
+  const { data: roles } = useUserRoles();
+  return roles?.some(r => isProducerRole(r)) || false;
+}
+
+export function useIsWholesale() {
+  const { data: roles } = useUserRoles();
+  return roles?.includes('productor_mayorista') || false;
+}
+
+export function useCanPublish() {
+  const { data: roles } = useUserRoles();
+  if (!roles) return false;
+  return roles.some(r => isProducerRole(r) || r === 'prestador' || r === 'admin');
+}
+
 export function useNeedsOnboarding() {
   const { user } = useAuth();
   const { data: roles, isLoading } = useUserRoles();
@@ -54,7 +84,7 @@ export function useSetUserRoles() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (roles: Exclude<AppRole, 'admin'>[]) => {
+    mutationFn: async (roles: SelectableRole[]) => {
       if (!user) throw new Error('Must be logged in');
       if (roles.length === 0) throw new Error('Must select at least one role');
 

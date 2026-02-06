@@ -31,6 +31,10 @@ export interface Listing {
   lon?: number;
   allowWhatsappContact: boolean;
   showWhatsappPublic: boolean;
+  // Wholesale producer fields
+  isWholesale: boolean;
+  minVolume: string | null;
+  productionCapacity: string | null;
 }
 
 export const CATEGORIES: Record<Category, { label: string; emoji: string }> = {

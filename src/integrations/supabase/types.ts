@@ -71,11 +71,14 @@ export type Database = {
           featured_until: string | null
           id: string
           images: string[] | null
+          is_wholesale: boolean
           lat: number | null
           lon: number | null
+          min_volume: string | null
           phone_whatsapp: string
           price: number | null
           price_unit: string | null
+          production_capacity: string | null
           show_whatsapp_public: boolean
           title: string
           updated_at: string
@@ -93,11 +96,14 @@ export type Database = {
           featured_until?: string | null
           id?: string
           images?: string[] | null
+          is_wholesale?: boolean
           lat?: number | null
           lon?: number | null
+          min_volume?: string | null
           phone_whatsapp: string
           price?: number | null
           price_unit?: string | null
+          production_capacity?: string | null
           show_whatsapp_public?: boolean
           title: string
           updated_at?: string
@@ -115,11 +121,14 @@ export type Database = {
           featured_until?: string | null
           id?: string
           images?: string[] | null
+          is_wholesale?: boolean
           lat?: number | null
           lon?: number | null
+          min_volume?: string | null
           phone_whatsapp?: string
           price?: number | null
           price_unit?: string | null
+          production_capacity?: string | null
           show_whatsapp_public?: boolean
           title?: string
           updated_at?: string
@@ -334,7 +343,13 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "consumidor" | "productor" | "prestador" | "admin"
+      app_role:
+        | "consumidor"
+        | "productor"
+        | "prestador"
+        | "admin"
+        | "productor_minorista"
+        | "productor_mayorista"
       listing_category:
         | "granos"
         | "frutas-verduras"
@@ -470,7 +485,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["consumidor", "productor", "prestador", "admin"],
+      app_role: [
+        "consumidor",
+        "productor",
+        "prestador",
+        "admin",
+        "productor_minorista",
+        "productor_mayorista",
+      ],
       listing_category: [
         "granos",
         "frutas-verduras",
