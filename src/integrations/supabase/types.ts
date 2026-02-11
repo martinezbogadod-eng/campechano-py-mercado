@@ -227,6 +227,7 @@ export type Database = {
           phone_whatsapp: string | null
           preferred_language: string | null
           profile_type: Database["public"]["Enums"]["profile_type"] | null
+          suspended: boolean
           updated_at: string
         }
         Insert: {
@@ -240,6 +241,7 @@ export type Database = {
           phone_whatsapp?: string | null
           preferred_language?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"] | null
+          suspended?: boolean
           updated_at?: string
         }
         Update: {
@@ -253,6 +255,7 @@ export type Database = {
           phone_whatsapp?: string | null
           preferred_language?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"] | null
+          suspended?: boolean
           updated_at?: string
         }
         Relationships: []

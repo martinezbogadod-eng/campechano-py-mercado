@@ -1,48 +1,39 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Star, Trash2, Check, X, ExternalLink, Flag, UserCog } from 'lucide-react';
+import {
+  Shield, Star, Trash2, Check, X, Flag, UserCog, Users, BarChart3,
+  Ban, CheckCircle, Eye,
+} from 'lucide-react';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/hooks/useAuth';
 import {
-  useIsAdmin,
-  useAllListings,
-  useFeaturedRequests,
-  useApproveFeaturedRequest,
-  useRejectFeaturedRequest,
-  useToggleListingFeatured,
-  useAdminDeleteListing,
+  useIsAdmin, useAllListings, useFeaturedRequests,
+  useApproveFeaturedRequest, useRejectFeaturedRequest,
+  useToggleListingFeatured, useAdminDeleteListing,
 } from '@/hooks/useAdmin';
 import { useAdminReports, useUpdateReport } from '@/hooks/useReports';
 import { useAdminRoleChangeRequests, useApproveRoleChange, useRejectRoleChange } from '@/hooks/useRoleChangeRequests';
+import { useAdminUsers, useToggleUserSuspension } from '@/hooks/useAdminUsers';
+import { ROLE_INFO, SelectableRole } from '@/hooks/useUserRoles';
 
 export default function AdminPanel() {
   const [deleteListingId, setDeleteListingId] = useState<string | null>(null);
   const [rejectRequestId, setRejectRequestId] = useState<string | null>(null);
-  
+  const [suspendUserId, setSuspendUserId] = useState<{ id: string; suspended: boolean } | null>(null);
+
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { user, loading: authLoading } = useAuth();
@@ -51,9 +42,11 @@ export default function AdminPanel() {
   const { data: requests, isLoading: requestsLoading } = useFeaturedRequests();
   const { data: reports, isLoading: reportsLoading } = useAdminReports();
   const { data: roleChangeRequests, isLoading: roleRequestsLoading } = useAdminRoleChangeRequests();
+  const { data: adminUsers, isLoading: usersLoading } = useAdminUsers();
   const updateReport = useUpdateReport();
   const approveRoleChange = useApproveRoleChange();
   const rejectRoleChange = useRejectRoleChange();
+  const toggleSuspension = useToggleUserSuspension();
   const { toast } = useToast();
 
   const approveFeatured = useApproveFeaturedRequest();
@@ -61,7 +54,6 @@ export default function AdminPanel() {
   const toggleFeatured = useToggleListingFeatured();
   const deleteListing = useAdminDeleteListing();
 
-  // Auth check
   if (authLoading || adminLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -78,22 +70,25 @@ export default function AdminPanel() {
           <div className="text-center">
             <Shield className="mx-auto h-16 w-16 text-muted-foreground" />
             <h1 className="mt-4 text-2xl font-bold">Acceso Restringido</h1>
-            <p className="mt-2 text-muted-foreground">
-              No tienes permisos para acceder a esta sección.
-            </p>
-            <Button onClick={() => navigate('/')} className="mt-4">
-              {t('common.back')}
-            </Button>
+            <p className="mt-2 text-muted-foreground">No tienes permisos para acceder a esta sección.</p>
+            <Button onClick={() => navigate('/')} className="mt-4">{t('common.back')}</Button>
           </div>
         </main>
       </div>
     );
   }
 
+  const pendingRequests = requests?.filter((r) => r.status === 'pending') || [];
+  const pendingReports = reports?.filter((r) => r.status === 'pending') || [];
+  const pendingRoleRequests = roleChangeRequests?.filter((r) => r.status === 'pending') || [];
+  const featuredListings = listings?.filter((l) => l.featured) || [];
+  const totalUsers = adminUsers?.length || 0;
+  const suspendedUsers = adminUsers?.filter(u => u.suspended).length || 0;
+
   const handleApproveRequest = async (requestId: string, listingId: string, durationDays: number) => {
     try {
       await approveFeatured.mutateAsync({ requestId, listingId, durationDays });
-      toast({ title: 'Solicitud aprobada', description: 'El anuncio ha sido destacado correctamente.' });
+      toast({ title: 'Solicitud aprobada', description: 'El anuncio ha sido destacado por 7 días.' });
     } catch {
       toast({ variant: 'destructive', title: t('common.error') });
     }
@@ -113,7 +108,7 @@ export default function AdminPanel() {
   const handleToggleFeatured = async (listingId: string, currentFeatured: boolean) => {
     try {
       await toggleFeatured.mutateAsync({ listingId, featured: !currentFeatured });
-      toast({ title: currentFeatured ? 'Destacado removido' : 'Anuncio destacado' });
+      toast({ title: currentFeatured ? 'Destacado removido' : 'Anuncio destacado (7 días)' });
     } catch {
       toast({ variant: 'destructive', title: t('common.error') });
     }
@@ -148,10 +143,6 @@ export default function AdminPanel() {
     }
   };
 
-  const pendingRequests = requests?.filter((r) => r.status === 'pending') || [];
-  const pendingReports = reports?.filter((r) => r.status === 'pending') || [];
-  const pendingRoleRequests = roleChangeRequests?.filter((r) => r.status === 'pending') || [];
-
   const handleDismissReport = async (reportId: string) => {
     try {
       await updateReport.mutateAsync({ reportId, status: 'dismissed' });
@@ -171,6 +162,24 @@ export default function AdminPanel() {
     }
   };
 
+  const handleToggleSuspend = async () => {
+    if (!suspendUserId) return;
+    try {
+      await toggleSuspension.mutateAsync({ userId: suspendUserId.id, suspended: !suspendUserId.suspended });
+      toast({ title: suspendUserId.suspended ? 'Usuario reactivado' : 'Usuario suspendido' });
+      setSuspendUserId(null);
+    } catch {
+      toast({ variant: 'destructive', title: t('common.error') });
+    }
+  };
+
+  const getRoleBadge = (role: string) => {
+    const info = ROLE_INFO[role as SelectableRole];
+    if (role === 'admin') return <Badge className="bg-purple-100 text-purple-800">🛡️ Admin</Badge>;
+    if (info) return <Badge className={info.color}>{info.emoji} {info.label}</Badge>;
+    return <Badge variant="secondary">{role}</Badge>;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -180,76 +189,181 @@ export default function AdminPanel() {
             <Shield className="h-6 w-6 text-primary" />
             {t('admin.title')}
           </h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestión integral de la plataforma KAMPS PY</p>
         </div>
 
-        {/* Summary Cards */}
-        <div className="mb-6 grid gap-4 sm:grid-cols-4">
+        {/* Dashboard Metrics */}
+        <div className="mb-6 grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total {t('admin.listings')}
+              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <Users className="h-3 w-3" /> Usuarios
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">{listings?.length || 0}</p>
+              <p className="text-2xl font-bold">{totalUsers}</p>
+              {suspendedUsers > 0 && (
+                <p className="text-xs text-destructive">{suspendedUsers} suspendidos</p>
+              )}
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {t('admin.featured')}
+              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <BarChart3 className="h-3 w-3" /> Publicaciones
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-featured">
-                {listings?.filter((l) => l.featured).length || 0}
-              </p>
+              <p className="text-2xl font-bold">{listings?.length || 0}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {t('admin.reports')}
+              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <Star className="h-3 w-3" /> Destacados
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-destructive">{pendingReports.length}</p>
+              <p className="text-2xl font-bold text-featured">{featuredListings.length}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {t('admin.roleRequests')}
+              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <Flag className="h-3 w-3" /> Reportes
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-accent">{pendingRoleRequests.length}</p>
+              <p className="text-2xl font-bold text-destructive">{pendingReports.length}</p>
+              <p className="text-xs text-muted-foreground">pendientes</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <UserCog className="h-3 w-3" /> Cambios Rol
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-2xl font-bold">{pendingRoleRequests.length}</p>
+              <p className="text-xs text-muted-foreground">pendientes</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <Star className="h-3 w-3" /> Sol. Destacados
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-2xl font-bold">{pendingRequests.length}</p>
+              <p className="text-xs text-muted-foreground">pendientes</p>
             </CardContent>
           </Card>
         </div>
 
-        <Tabs defaultValue="listings">
-          <TabsList>
+        <Tabs defaultValue="users">
+          <TabsList className="flex-wrap h-auto gap-1">
+            <TabsTrigger value="users">
+              <Users className="mr-1 h-4 w-4" /> Usuarios
+            </TabsTrigger>
             <TabsTrigger value="listings">{t('admin.listings')}</TabsTrigger>
-            <TabsTrigger value="requests" className="relative">
+            <TabsTrigger value="featured" className="relative">
               {t('admin.featured')}
               {pendingRequests.length > 0 && (
-                <Badge className="ml-2 bg-accent text-accent-foreground">{pendingRequests.length}</Badge>
+                <Badge className="ml-1 bg-accent text-accent-foreground text-xs">{pendingRequests.length}</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="reports" className="relative">
               {t('admin.reports')}
               {pendingReports.length > 0 && (
-                <Badge className="ml-2 bg-destructive text-destructive-foreground">{pendingReports.length}</Badge>
+                <Badge className="ml-1 bg-destructive text-destructive-foreground text-xs">{pendingReports.length}</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="role-requests" className="relative">
               {t('admin.roleRequests')}
               {pendingRoleRequests.length > 0 && (
-                <Badge className="ml-2 bg-accent text-accent-foreground">{pendingRoleRequests.length}</Badge>
+                <Badge className="ml-1 bg-accent text-accent-foreground text-xs">{pendingRoleRequests.length}</Badge>
               )}
             </TabsTrigger>
           </TabsList>
+
+          {/* Users Tab */}
+          <TabsContent value="users" className="mt-4">
+            {usersLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : (
+              <div className="rounded-lg border overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Usuario</TableHead>
+                      <TableHead>Ubicación</TableHead>
+                      <TableHead>Roles</TableHead>
+                      <TableHead>Estado</TableHead>
+                      <TableHead>Registro</TableHead>
+                      <TableHead className="text-right">Acciones</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {adminUsers?.map((u) => (
+                      <TableRow key={u.id} className={u.suspended ? 'opacity-60' : ''}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {u.avatar_url ? (
+                              <img src={u.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover" />
+                            ) : (
+                              <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
+                                {(u.name || '?')[0]?.toUpperCase()}
+                              </div>
+                            )}
+                            <span className="font-medium truncate max-w-[150px]">{u.name || 'Sin nombre'}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {u.city && u.department ? `${u.city}, ${u.department}` : u.department || '-'}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {u.roles.length > 0 ? u.roles.map(r => (
+                              <span key={r}>{getRoleBadge(r)}</span>
+                            )) : <Badge variant="outline">Sin rol</Badge>}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {u.suspended ? (
+                            <Badge variant="destructive"><Ban className="mr-1 h-3 w-3" />Suspendido</Badge>
+                          ) : (
+                            <Badge variant="secondary"><CheckCircle className="mr-1 h-3 w-3" />Activo</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {new Date(u.created_at).toLocaleDateString('es-PY')}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {!u.roles.includes('admin') && (
+                            <Button
+                              variant={u.suspended ? 'default' : 'destructive'}
+                              size="sm"
+                              onClick={() => setSuspendUserId({ id: u.id, suspended: u.suspended })}
+                            >
+                              {u.suspended ? (
+                                <><CheckCircle className="mr-1 h-3 w-3" /> Reactivar</>
+                              ) : (
+                                <><Ban className="mr-1 h-3 w-3" /> Suspender</>
+                              )}
+                            </Button>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </TabsContent>
 
           {/* Listings Tab */}
           <TabsContent value="listings" className="mt-4">
@@ -258,7 +372,7 @@ export default function AdminPanel() {
                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
             ) : (
-              <div className="rounded-lg border">
+              <div className="rounded-lg border overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -272,13 +386,19 @@ export default function AdminPanel() {
                   <TableBody>
                     {listings?.map((listing) => (
                       <TableRow key={listing.id}>
-                        <TableCell className="font-medium max-w-xs truncate">{listing.title}</TableCell>
+                        <TableCell className="font-medium max-w-xs truncate">
+                          <button
+                            className="text-left hover:text-primary transition-colors"
+                            onClick={() => navigate(`/anuncio/${listing.id}`)}
+                          >
+                            {listing.title}
+                          </button>
+                        </TableCell>
                         <TableCell>{listing.category}</TableCell>
                         <TableCell>
                           {listing.featured ? (
                             <Badge className="bg-featured text-featured-foreground">
-                              <Star className="mr-1 h-3 w-3" />
-                              {t('listing.featured')}
+                              <Star className="mr-1 h-3 w-3" /> ⭐ {t('listing.featured')}
                             </Badge>
                           ) : (
                             <Badge variant="secondary">Normal</Badge>
@@ -287,6 +407,9 @@ export default function AdminPanel() {
                         <TableCell>{new Date(listing.created_at).toLocaleDateString('es-PY')}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
+                            <Button variant="ghost" size="sm" onClick={() => navigate(`/anuncio/${listing.id}`)}>
+                              <Eye className="h-4 w-4" />
+                            </Button>
                             <Button variant="ghost" size="sm" onClick={() => handleToggleFeatured(listing.id, listing.featured)}>
                               <Star className={`h-4 w-4 ${listing.featured ? 'fill-featured text-featured' : ''}`} />
                             </Button>
@@ -304,7 +427,7 @@ export default function AdminPanel() {
           </TabsContent>
 
           {/* Featured Requests Tab */}
-          <TabsContent value="requests" className="mt-4">
+          <TabsContent value="featured" className="mt-4">
             {requestsLoading ? (
               <div className="flex justify-center py-8">
                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -322,7 +445,7 @@ export default function AdminPanel() {
                         <div className="flex-1">
                           <p className="font-medium">{request.listing?.title || 'Anuncio eliminado'}</p>
                           <div className="mt-1 flex flex-wrap gap-2 text-sm text-muted-foreground">
-                            <span>{request.duration_days} días</span>
+                            <span>7 días</span>
                             <span>•</span>
                             <span>{new Date(request.created_at).toLocaleDateString('es-PY')}</span>
                             <span>•</span>
@@ -331,24 +454,16 @@ export default function AdminPanel() {
                             </Badge>
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => window.open(request.receipt_url, '_blank')}>
-                            <ExternalLink className="mr-1 h-4 w-4" />
-                            Ver Comprobante
-                          </Button>
-                          {request.status === 'pending' && (
-                            <>
-                              <Button size="sm" onClick={() => handleApproveRequest(request.id, request.listing_id, request.duration_days)} disabled={approveFeatured.isPending}>
-                                <Check className="mr-1 h-4 w-4" />
-                                {t('common.approve')}
-                              </Button>
-                              <Button variant="destructive" size="sm" onClick={() => setRejectRequestId(request.id)}>
-                                <X className="mr-1 h-4 w-4" />
-                                {t('common.reject')}
-                              </Button>
-                            </>
-                          )}
-                        </div>
+                        {request.status === 'pending' && (
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => handleApproveRequest(request.id, request.listing_id, 7)} disabled={approveFeatured.isPending}>
+                              <Check className="mr-1 h-4 w-4" /> {t('common.approve')}
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => setRejectRequestId(request.id)}>
+                              <X className="mr-1 h-4 w-4" /> {t('common.reject')}
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -378,7 +493,7 @@ export default function AdminPanel() {
                             <Flag className="h-4 w-4 text-destructive" />
                             <p className="font-medium">{report.listing?.title || 'Anuncio eliminado'}</p>
                             <Badge variant={report.status === 'pending' ? 'secondary' : report.status === 'accepted' ? 'destructive' : 'outline'}>
-                              {report.status === 'pending' ? t('common.pending') : report.status === 'accepted' ? t('common.approved') : 'Descartado'}
+                              {report.status === 'pending' ? t('common.pending') : report.status === 'accepted' ? 'Aceptado' : 'Descartado'}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">{report.reason}</p>
@@ -387,8 +502,7 @@ export default function AdminPanel() {
                         {report.status === 'pending' && (
                           <div className="flex gap-2">
                             <Button size="sm" variant="destructive" onClick={() => report.listing && handleAcceptReport(report.id, report.listing_id)}>
-                              <Trash2 className="mr-1 h-4 w-4" />
-                              Eliminar anuncio
+                              <Trash2 className="mr-1 h-4 w-4" /> Eliminar anuncio
                             </Button>
                             <Button size="sm" variant="outline" onClick={() => handleDismissReport(report.id)}>
                               Descartar
@@ -430,19 +544,15 @@ export default function AdminPanel() {
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">{t('admin.reason')}: {req.reason}</p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(req.created_at).toLocaleDateString('es-PY')}
-                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">{new Date(req.created_at).toLocaleDateString('es-PY')}</p>
                         </div>
                         {req.status === 'pending' && (
                           <div className="flex gap-2">
                             <Button size="sm" onClick={() => handleApproveRoleChange(req.id, req.user_id, req.to_role)} disabled={approveRoleChange.isPending}>
-                              <Check className="mr-1 h-4 w-4" />
-                              {t('common.approve')}
+                              <Check className="mr-1 h-4 w-4" /> {t('common.approve')}
                             </Button>
                             <Button size="sm" variant="destructive" onClick={() => handleRejectRoleChange(req.id)} disabled={rejectRoleChange.isPending}>
-                              <X className="mr-1 h-4 w-4" />
-                              {t('common.reject')}
+                              <X className="mr-1 h-4 w-4" /> {t('common.reject')}
                             </Button>
                           </div>
                         )}
@@ -456,7 +566,7 @@ export default function AdminPanel() {
         </Tabs>
       </main>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Listing Dialog */}
       <AlertDialog open={!!deleteListingId} onOpenChange={() => setDeleteListingId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -470,7 +580,7 @@ export default function AdminPanel() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Reject Confirmation Dialog */}
+      {/* Reject Featured Dialog */}
       <AlertDialog open={!!rejectRequestId} onOpenChange={() => setRejectRequestId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -480,6 +590,28 @@ export default function AdminPanel() {
           <AlertDialogFooter>
             <AlertDialogCancel>{t('listing.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleRejectRequest}>{t('common.reject')}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Suspend/Reactivate User Dialog */}
+      <AlertDialog open={!!suspendUserId} onOpenChange={() => setSuspendUserId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {suspendUserId?.suspended ? '¿Reactivar usuario?' : '¿Suspender usuario?'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {suspendUserId?.suspended
+                ? 'El usuario podrá volver a acceder a la plataforma normalmente.'
+                : 'El usuario no podrá publicar ni interactuar en la plataforma mientras esté suspendido.'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('listing.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleToggleSuspend}>
+              {suspendUserId?.suspended ? 'Reactivar' : 'Suspender'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
