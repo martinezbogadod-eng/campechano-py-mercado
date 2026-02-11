@@ -434,6 +434,8 @@ export type Database = {
         | "maquinaria"
         | "insumos"
         | "servicios"
+        | "forestal"
+        | "viveros"
       profile_type: "productor" | "tecnico" | "proveedor"
     }
     CompositeTypes: {
@@ -577,6 +579,8 @@ export const Constants = {
         "maquinaria",
         "insumos",
         "servicios",
+        "forestal",
+        "viveros",
       ],
       profile_type: ["productor", "tecnico", "proveedor"],
     },
