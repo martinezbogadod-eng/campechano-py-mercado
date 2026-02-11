@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useMyListings, useDeleteListing, DbListing } from '@/hooks/useListings';
 import Header from '@/components/Header';
 import ListingForm from '@/components/ListingForm';
+import FeaturedRequestDialog from '@/components/FeaturedRequestDialog';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -23,8 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { CATEGORIES } from '@/types/listing';
-import { ArrowLeft, Plus, Pencil, Trash2, Eye } from 'lucide-react';
-
+import { ArrowLeft, Plus, Pencil, Trash2, Star } from 'lucide-react';
 const MyListings = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -34,6 +34,7 @@ const MyListings = () => {
 
   const [editListing, setEditListing] = useState<DbListing | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [featuredListing, setFeaturedListing] = useState<DbListing | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -151,6 +152,16 @@ const MyListings = () => {
                   </div>
 
                   <div className="flex gap-2">
+                    {!listing.featured && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setFeaturedListing(listing)}
+                      >
+                        <Star className="mr-1 h-3 w-3" />
+                        Destacar
+                      </Button>
+                    )}
                     <Button
                       variant="outline"
                       size="sm"
@@ -208,6 +219,16 @@ const MyListings = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Featured Request Dialog */}
+      {featuredListing && (
+        <FeaturedRequestDialog
+          open={!!featuredListing}
+          onClose={() => setFeaturedListing(null)}
+          listingId={featuredListing.id}
+          listingTitle={featuredListing.title}
+        />
+      )}
     </div>
   );
 };

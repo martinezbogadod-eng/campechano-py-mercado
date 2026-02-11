@@ -29,6 +29,33 @@ export function useMyFeaturedRequests() {
   });
 }
 
+/**
+ * Check if the current user already has an active featured listing
+ * (featured=true and featured_until > now)
+ */
+export function useHasActiveFeatured() {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['has-active-featured', user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+
+      const { data, error } = await supabase
+        .from('listings')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('featured', true)
+        .gt('featured_until', new Date().toISOString())
+        .limit(1);
+
+      if (error) throw error;
+      return (data?.length || 0) > 0;
+    },
+    enabled: !!user,
+  });
+}
+
 export function useCreateFeaturedRequest() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
