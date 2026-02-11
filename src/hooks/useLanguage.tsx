@@ -3,6 +3,9 @@ import { Language, translations, LANGUAGES } from '@/i18n/translations';
 import { useAuth } from './useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
+// Re-export for convenience
+export type { Language };
+
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => Promise<void>;

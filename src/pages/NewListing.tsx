@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useProfile } from '@/hooks/useProfile';
 import { useCanPublish, useUserRoles } from '@/hooks/useUserRoles';
 import Header from '@/components/Header';
@@ -11,6 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const NewListing = () => {
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: roles, isLoading: rolesLoading } = useUserRoles();
   const canPublish = useCanPublish();
@@ -47,22 +49,21 @@ const NewListing = () => {
           <div className="mb-6">
             <Button variant="ghost" onClick={() => navigate('/')}>
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Volver
+              {t('common.back')}
             </Button>
           </div>
           <div className="mx-auto max-w-2xl">
             <Alert variant="destructive">
               <ShieldAlert className="h-4 w-4" />
-              <AlertTitle>No podés publicar</AlertTitle>
+              <AlertTitle>{t('publish.blocked')}</AlertTitle>
               <AlertDescription>
-                Tu segmento actual (Consumidor) no permite publicar anuncios. 
-                Solo productores y prestadores de servicios pueden publicar contenido.
+                {t('publish.blockedConsumer')}
                 <Button
                   variant="link"
                   className="ml-2 h-auto p-0 text-destructive underline"
-                  onClick={() => navigate('/onboarding')}
+                  onClick={() => navigate('/perfil')}
                 >
-                  Cambiar segmento
+                  {t('publish.requestChange')}
                 </Button>
               </AlertDescription>
             </Alert>
@@ -79,15 +80,15 @@ const NewListing = () => {
         <div className="mb-6">
           <Button variant="ghost" onClick={() => navigate('/')}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver
+            {t('common.back')}
           </Button>
         </div>
 
         <div className="mx-auto max-w-2xl">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-foreground">Publicar Anuncio</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('header.publish')}</h1>
             <p className="text-muted-foreground">
-              Completa los datos para publicar tu anuncio en el marketplace
+              {t('search.placeholder')}
             </p>
           </div>
 
@@ -103,7 +104,7 @@ const NewListing = () => {
                   className="ml-2 h-auto p-0 text-destructive underline"
                   onClick={() => navigate('/perfil')}
                 >
-                  Ir a Mi Perfil
+                  {t('header.myProfile')}
                 </Button>
               </AlertDescription>
             </Alert>

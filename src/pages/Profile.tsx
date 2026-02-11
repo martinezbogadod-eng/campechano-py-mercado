@@ -4,13 +4,17 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useProfile, useUpdateProfile, ProfileType, PROFILE_TYPES } from '@/hooks/useProfile';
+import { useUserRoles, ROLE_INFO, SelectableRole } from '@/hooks/useUserRoles';
 import { useUserTransactions, useConfirmTransaction, useCreateReview } from '@/hooks/useReputation';
+import { useMyRoleChangeRequests, useCreateRoleChangeRequest } from '@/hooks/useRoleChangeRequests';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -27,7 +31,7 @@ import {
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { DEPARTMENTS } from '@/types/listing';
-import { ArrowLeft, Loader2, Star, Check, HandshakeIcon } from 'lucide-react';
+import { ArrowLeft, Loader2, Star, Check, HandshakeIcon, Send } from 'lucide-react';
 import AvatarUpload from '@/components/AvatarUpload';
 
 const profileSchema = z.object({
@@ -41,14 +45,20 @@ const profileSchema = z.object({
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
+const SELECTABLE_ROLES: SelectableRole[] = ['consumidor', 'productor_minorista', 'productor_mayorista', 'prestador'];
+
 const Profile = () => {
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const { data: roles } = useUserRoles();
   const { data: transactions } = useUserTransactions();
+  const { data: roleRequests } = useMyRoleChangeRequests();
   const updateProfile = useUpdateProfile();
   const confirmTransaction = useConfirmTransaction();
   const createReview = useCreateReview();
+  const createRoleChangeRequest = useCreateRoleChangeRequest();
   const { toast } = useToast();
 
   const [reviewDialog, setReviewDialog] = useState<{
@@ -58,6 +68,15 @@ const Profile = () => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  // Role change request state
+  const [showRoleRequest, setShowRoleRequest] = useState(false);
+  const [requestedRole, setRequestedRole] = useState<string>('');
+  const [requestReason, setRequestReason] = useState('');
+
+  // Current user role (first non-admin role)
+  const currentRole = roles?.find(r => r !== 'admin' && r !== 'productor') as SelectableRole | undefined;
+  const pendingRequest = roleRequests?.find(r => r.status === 'pending');
 
   // Sync avatar URL when profile loads
   useEffect(() => {
@@ -100,13 +119,13 @@ const Profile = () => {
     try {
       await updateProfile.mutateAsync(data);
       toast({
-        title: 'Perfil actualizado',
-        description: 'Tus datos han sido guardados correctamente.',
+        title: t('profile.updated'),
+        description: t('common.success'),
       });
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: t('common.error'),
         description: 'No se pudo actualizar el perfil',
       });
     }
@@ -122,7 +141,7 @@ const Profile = () => {
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: t('common.error'),
         description: 'No se pudo confirmar la operación',
       });
     }
@@ -148,8 +167,40 @@ const Profile = () => {
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: t('common.error'),
         description: 'No se pudo enviar la reseña',
+      });
+    }
+  };
+
+  const handleSubmitRoleRequest = async () => {
+    if (!requestedRole || !requestReason.trim()) {
+      toast({
+        variant: 'destructive',
+        title: t('common.error'),
+        description: t('profile.requestReason'),
+      });
+      return;
+    }
+
+    try {
+      await createRoleChangeRequest.mutateAsync({
+        fromRole: currentRole || 'consumidor',
+        toRole: requestedRole,
+        reason: requestReason.trim(),
+      });
+      toast({
+        title: t('profile.requestSent'),
+        description: t('profile.requestSentDesc'),
+      });
+      setShowRoleRequest(false);
+      setRequestedRole('');
+      setRequestReason('');
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: t('common.error'),
+        description: 'No se pudo enviar la solicitud',
       });
     }
   };
@@ -179,14 +230,61 @@ const Profile = () => {
         <div className="mb-6">
           <Button variant="ghost" onClick={() => navigate('/')}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver
+            {t('common.back')}
           </Button>
         </div>
 
         <div className="mx-auto max-w-2xl space-y-8">
+          {/* Current Role Section */}
+          <div className="rounded-lg border bg-card p-6">
+            <h2 className="mb-4 text-lg font-bold text-foreground">{t('profile.currentRole')}</h2>
+            {currentRole && (
+              <div className="flex items-center gap-3 mb-4">
+                <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium ${ROLE_INFO[currentRole]?.color || 'bg-muted text-muted-foreground'}`}>
+                  {ROLE_INFO[currentRole]?.emoji} {t(`role.${currentRole}`)}
+                </span>
+              </div>
+            )}
+
+            {/* Pending request status */}
+            {pendingRequest && (
+              <div className="rounded-md border border-yellow-200 bg-yellow-50 p-3 mb-4">
+                <p className="text-sm font-medium text-yellow-800">{t('profile.requestPending')}</p>
+                <p className="text-xs text-yellow-700 mt-1">
+                  {t(`role.${pendingRequest.from_role}`)} → {t(`role.${pendingRequest.to_role}`)}
+                </p>
+              </div>
+            )}
+
+            {/* Last resolved request */}
+            {roleRequests && roleRequests.length > 0 && !pendingRequest && (
+              <>
+                {roleRequests[0].status === 'approved' && (
+                  <div className="rounded-md border border-green-200 bg-green-50 p-3 mb-4">
+                    <p className="text-sm font-medium text-green-800">{t('profile.requestApproved')}</p>
+                  </div>
+                )}
+                {roleRequests[0].status === 'rejected' && (
+                  <div className="rounded-md border border-red-200 bg-red-50 p-3 mb-4">
+                    <p className="text-sm font-medium text-red-800">{t('profile.requestRejected')}</p>
+                    {roleRequests[0].admin_notes && (
+                      <p className="text-xs text-red-700 mt-1">{roleRequests[0].admin_notes}</p>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+
+            {!pendingRequest && (
+              <Button variant="outline" size="sm" onClick={() => setShowRoleRequest(true)}>
+                {t('profile.requestChange')}
+              </Button>
+            )}
+          </div>
+
           {/* Profile Form */}
           <div className="rounded-lg border bg-card p-6">
-            <h1 className="mb-6 text-2xl font-bold text-foreground">Mi Perfil</h1>
+            <h1 className="mb-6 text-2xl font-bold text-foreground">{t('profile.title')}</h1>
 
             <div className="mb-6">
               <AvatarUpload
@@ -197,7 +295,7 @@ const Profile = () => {
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Nombre o Razón Social *</Label>
+                <Label htmlFor="name">{t('profile.name')} *</Label>
                 <Input
                   id="name"
                   placeholder="Ej: Juan Pérez o Agrícola ABC S.A."
@@ -209,7 +307,7 @@ const Profile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Tipo de Perfil *</Label>
+                <Label>{t('profile.type')} *</Label>
                 <Select
                   value={watch('profile_type')}
                   onValueChange={(value) => setValue('profile_type', value as ProfileType)}
@@ -232,7 +330,7 @@ const Profile = () => {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Departamento *</Label>
+                  <Label>{t('profile.department')} *</Label>
                   <Select
                     value={watch('department')}
                     onValueChange={(value) => setValue('department', value)}
@@ -254,7 +352,7 @@ const Profile = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="city">Ciudad/Distrito *</Label>
+                  <Label htmlFor="city">{t('profile.city')} *</Label>
                   <Input
                     id="city"
                     placeholder="Ej: Santa Rita"
@@ -267,14 +365,14 @@ const Profile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone_whatsapp">Teléfono WhatsApp (privado) *</Label>
+                <Label htmlFor="phone_whatsapp">{t('profile.phone')} *</Label>
                 <Input
                   id="phone_whatsapp"
                   placeholder="595981234567"
                   {...register('phone_whatsapp')}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Este número no se muestra públicamente. Solo se usa para contacto desde el chat.
+                  {t('profile.phoneNote')}
                 </p>
                 {errors.phone_whatsapp && (
                   <p className="text-sm text-destructive">{errors.phone_whatsapp.message}</p>
@@ -282,7 +380,7 @@ const Profile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Descripción breve (opcional)</Label>
+                <Label htmlFor="description">{t('profile.description')}</Label>
                 <Textarea
                   id="description"
                   placeholder="Cuéntanos sobre tu actividad..."
@@ -298,10 +396,10 @@ const Profile = () => {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Guardando...
+                    {t('profile.saving')}
                   </>
                 ) : (
-                  'Guardar Perfil'
+                  t('profile.save')
                 )}
               </Button>
             </form>
@@ -396,7 +494,7 @@ const Profile = () => {
                       className={`h-8 w-8 ${
                         star <= rating
                           ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                          : 'text-muted-foreground'
                       }`}
                     />
                   </button>
@@ -418,17 +516,71 @@ const Profile = () => {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setReviewDialog(null)}>
-              Cancelar
+              {t('listing.cancel')}
             </Button>
             <Button onClick={handleSubmitReview} disabled={createReview.isPending}>
               {createReview.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Enviando...
+                  {t('common.loading')}
                 </>
               ) : (
                 'Enviar Reseña'
               )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Role Change Request Dialog */}
+      <Dialog open={showRoleRequest} onOpenChange={setShowRoleRequest}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('profile.requestChange')}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>{t('profile.selectNewRole')}</Label>
+              <Select value={requestedRole} onValueChange={setRequestedRole}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('profile.selectNewRole')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {SELECTABLE_ROLES.filter(r => r !== currentRole).map(role => (
+                    <SelectItem key={role} value={role}>
+                      {ROLE_INFO[role]?.emoji} {t(`role.${role}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>{t('profile.requestReason')}</Label>
+              <Textarea
+                placeholder={t('profile.requestReasonPlaceholder')}
+                value={requestReason}
+                onChange={(e) => setRequestReason(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRoleRequest(false)}>
+              {t('listing.cancel')}
+            </Button>
+            <Button
+              onClick={handleSubmitRoleRequest}
+              disabled={createRoleChangeRequest.isPending || !requestedRole || !requestReason.trim()}
+            >
+              {createRoleChangeRequest.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="mr-2 h-4 w-4" />
+              )}
+              {t('profile.sendRequest')}
             </Button>
           </DialogFooter>
         </DialogContent>

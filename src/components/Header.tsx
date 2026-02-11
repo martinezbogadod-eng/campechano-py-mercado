@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle, RefreshCw } from 'lucide-react';
+import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle } from 'lucide-react';
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -108,10 +108,6 @@ const Header = () => {
                   <DropdownMenuItem onClick={() => navigate('/perfil')}>
                     <UserCircle className="mr-2 h-4 w-4" />
                     {t('header.myProfile')}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/onboarding')}>
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    {t('header.changeRole')}
                   </DropdownMenuItem>
                   {canPublish && (
                     <DropdownMenuItem onClick={() => navigate('/mis-anuncios')}>

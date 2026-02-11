@@ -295,6 +295,42 @@ export type Database = {
           },
         ]
       }
+      role_change_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          from_role: string
+          id: string
+          reason: string
+          reviewed_at: string | null
+          status: string
+          to_role: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          from_role: string
+          id?: string
+          reason: string
+          reviewed_at?: string | null
+          status?: string
+          to_role: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          from_role?: string
+          id?: string
+          reason?: string
+          reviewed_at?: string | null
+          status?: string
+          to_role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           admin_validated: boolean | null
