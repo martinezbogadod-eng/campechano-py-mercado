@@ -4,7 +4,9 @@ export type Category =
   | 'ganaderia'
   | 'maquinaria'
   | 'insumos'
-  | 'servicios';
+  | 'servicios'
+  | 'forestal'
+  | 'viveros';
 
 export type PriceUnit = 'Kg' | 'Litros' | 'Unidad' | 'Docena' | 'Bolsa' | 'Tonelada';
 
@@ -44,6 +46,8 @@ export const CATEGORIES: Record<Category, { label: string; emoji: string }> = {
   'maquinaria': { label: 'Maquinaria', emoji: '🚜' },
   'insumos': { label: 'Insumos Agrícolas', emoji: '🌱' },
   'servicios': { label: 'Servicios', emoji: '🔧' },
+  'forestal': { label: 'Forestal', emoji: '🌳' },
+  'viveros': { label: 'Viveros', emoji: '🪴' },
 };
 
 export const DEPARTMENTS = [
