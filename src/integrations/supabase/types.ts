@@ -21,7 +21,7 @@ export type Database = {
           duration_days: number
           id: string
           listing_id: string
-          receipt_url: string
+          receipt_url: string | null
           reviewed_at: string | null
           status: string
           user_id: string
@@ -32,7 +32,7 @@ export type Database = {
           duration_days: number
           id?: string
           listing_id: string
-          receipt_url: string
+          receipt_url?: string | null
           reviewed_at?: string | null
           status?: string
           user_id: string
@@ -43,7 +43,7 @@ export type Database = {
           duration_days?: number
           id?: string
           listing_id?: string
-          receipt_url?: string
+          receipt_url?: string | null
           reviewed_at?: string | null
           status?: string
           user_id?: string

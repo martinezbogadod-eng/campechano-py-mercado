@@ -59,6 +59,27 @@ export function useAdminReports() {
   });
 }
 
+/**
+ * Check if a listing has pending (unresolved) reports
+ */
+export function useListingHasReports(listingId: string) {
+  return useQuery({
+    queryKey: ['listing-has-reports', listingId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('listing_reports')
+        .select('id')
+        .eq('listing_id', listingId)
+        .eq('status', 'pending')
+        .limit(1);
+
+      if (error) throw error;
+      return (data?.length || 0) > 0;
+    },
+    enabled: !!listingId,
+  });
+}
+
 export function useUpdateReport() {
   const queryClient = useQueryClient();
 

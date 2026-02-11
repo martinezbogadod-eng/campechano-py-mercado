@@ -87,7 +87,7 @@ export function useApproveFeaturedRequest() {
 
       if (requestError) throw requestError;
 
-      // Update the listing to be featured
+      // Update the listing to be featured (always 7 days)
       const { error: listingError } = await supabase
         .from('listings')
         .update({
@@ -135,7 +135,12 @@ export function useToggleListingFeatured() {
     mutationFn: async ({ listingId, featured }: { listingId: string; featured: boolean }) => {
       const updateData: { featured: boolean; featured_until?: string | null } = { featured };
       
-      if (!featured) {
+      if (featured) {
+        // Always 7-day duration
+        const featuredUntil = new Date();
+        featuredUntil.setDate(featuredUntil.getDate() + 7);
+        updateData.featured_until = featuredUntil.toISOString();
+      } else {
         updateData.featured_until = null;
       }
 
@@ -149,6 +154,7 @@ export function useToggleListingFeatured() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-listings'] });
       queryClient.invalidateQueries({ queryKey: ['listings'] });
+      queryClient.invalidateQueries({ queryKey: ['has-active-featured'] });
     },
   });
 }
