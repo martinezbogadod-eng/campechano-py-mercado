@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Star, Trash2, Eye, Check, X, ExternalLink } from 'lucide-react';
+import { Shield, Star, Trash2, Eye, Check, X, ExternalLink, Flag, AlertTriangle } from 'lucide-react';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +35,7 @@ import {
   useToggleListingFeatured,
   useAdminDeleteListing,
 } from '@/hooks/useAdmin';
+import { useAdminReports, useUpdateReport } from '@/hooks/useReports';
 
 export default function AdminPanel() {
   const [deleteListingId, setDeleteListingId] = useState<string | null>(null);
@@ -45,6 +46,8 @@ export default function AdminPanel() {
   const { data: isAdmin, isLoading: adminLoading } = useIsAdmin();
   const { data: listings, isLoading: listingsLoading } = useAllListings();
   const { data: requests, isLoading: requestsLoading } = useFeaturedRequests();
+  const { data: reports, isLoading: reportsLoading } = useAdminReports();
+  const updateReport = useUpdateReport();
   const { toast } = useToast();
 
   const approveFeatured = useApproveFeaturedRequest();
@@ -152,6 +155,26 @@ export default function AdminPanel() {
   };
 
   const pendingRequests = requests?.filter((r) => r.status === 'pending') || [];
+  const pendingReports = reports?.filter((r) => r.status === 'pending') || [];
+
+  const handleDismissReport = async (reportId: string) => {
+    try {
+      await updateReport.mutateAsync({ reportId, status: 'dismissed' });
+      toast({ title: 'Reporte descartado' });
+    } catch {
+      toast({ variant: 'destructive', title: 'Error' });
+    }
+  };
+
+  const handleAcceptReport = async (reportId: string, listingId: string) => {
+    try {
+      await deleteListing.mutateAsync(listingId);
+      await updateReport.mutateAsync({ reportId, status: 'accepted', adminNotes: 'Publicación eliminada' });
+      toast({ title: 'Publicación eliminada por reporte' });
+    } catch {
+      toast({ variant: 'destructive', title: 'Error al procesar reporte' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -207,12 +230,20 @@ export default function AdminPanel() {
 
         <Tabs defaultValue="listings">
           <TabsList>
-            <TabsTrigger value="listings">Todos los Anuncios</TabsTrigger>
+            <TabsTrigger value="listings">Anuncios</TabsTrigger>
             <TabsTrigger value="requests" className="relative">
-              Solicitudes de Destacados
+              Destacados
               {pendingRequests.length > 0 && (
                 <Badge className="ml-2 bg-accent text-accent-foreground">
                   {pendingRequests.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="relative">
+              Reportes
+              {pendingReports.length > 0 && (
+                <Badge className="ml-2 bg-destructive text-destructive-foreground">
+                  {pendingReports.length}
                 </Badge>
               )}
             </TabsTrigger>
@@ -368,6 +399,63 @@ export default function AdminPanel() {
                             </>
                           )}
                         </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+          {/* Reports Tab */}
+          <TabsContent value="reports" className="mt-4">
+            {reportsLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : !reports?.length ? (
+              <div className="rounded-lg border p-8 text-center">
+                <p className="text-muted-foreground">No hay reportes</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {reports.map((report) => (
+                  <Card key={report.id}>
+                    <CardContent className="p-4">
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Flag className="h-4 w-4 text-destructive" />
+                            <p className="font-medium">
+                              {report.listing?.title || 'Anuncio eliminado'}
+                            </p>
+                            <Badge variant={report.status === 'pending' ? 'secondary' : report.status === 'accepted' ? 'destructive' : 'outline'}>
+                              {report.status === 'pending' ? 'Pendiente' : report.status === 'accepted' ? 'Aceptado' : 'Descartado'}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{report.reason}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {new Date(report.created_at).toLocaleDateString('es-PY')}
+                          </p>
+                        </div>
+                        {report.status === 'pending' && (
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => report.listing && handleAcceptReport(report.id, report.listing_id)}
+                            >
+                              <Trash2 className="mr-1 h-4 w-4" />
+                              Eliminar anuncio
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDismissReport(report.id)}
+                            >
+                              Descartar
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>

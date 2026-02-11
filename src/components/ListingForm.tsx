@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useIsWholesale } from '@/hooks/useUserRoles';
+import { useIsWholesale, useUserRoles, isProducerRole } from '@/hooks/useUserRoles';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCreateListing, useUpdateListing, uploadListingImage, DbListing } from '@/hooks/useListings';
 import { CATEGORIES, DEPARTMENTS, Category, PRICE_UNITS, PriceUnit } from '@/types/listing';
@@ -68,8 +68,28 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
   const { toast } = useToast();
   const { t } = useLanguage();
   const isWholesaleUser = useIsWholesale();
+  const { data: userRoles } = useUserRoles();
   const createListing = useCreateListing();
   const updateListing = useUpdateListing();
+
+  // Determine allowed categories based on role
+  const isServiceProvider = userRoles?.includes('prestador') || false;
+  const isProducer = userRoles?.some(r => isProducerRole(r)) || false;
+  
+  const getAllowedCategories = () => {
+    if (isServiceProvider && !isProducer) {
+      // Service providers can only post services
+      return Object.entries(CATEGORIES).filter(([key]) => key === 'servicios');
+    }
+    if (isProducer && !isServiceProvider) {
+      // Producers can only post products (not services)
+      return Object.entries(CATEGORIES).filter(([key]) => key !== 'servicios');
+    }
+    // Both roles or admin: all categories
+    return Object.entries(CATEGORIES);
+  };
+
+  const allowedCategories = getAllowedCategories();
 
   const {
     register,
@@ -226,7 +246,7 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
             <SelectValue placeholder="Selecciona categoría" />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(CATEGORIES).map(([key, { label, emoji }]) => (
+            {allowedCategories.map(([key, { label, emoji }]) => (
               <SelectItem key={key} value={key}>
                 {emoji} {label}
               </SelectItem>
