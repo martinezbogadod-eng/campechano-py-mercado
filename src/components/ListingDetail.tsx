@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock } from 'lucide-react';
+import { X, MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -15,6 +15,7 @@ import ImageGallery from './ImageGallery';
 import ChatDialog from './ChatDialog';
 import SellerInfo from './SellerInfo';
 import TransactionButton from './TransactionButton';
+import ReportButton from './ReportButton';
 import { useNavigate } from 'react-router-dom';
 
 interface ListingDetailProps {
@@ -153,6 +154,20 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
               </p>
             </div>
 
+            {/* Wholesale Info */}
+            {listing.isWholesale && (listing.minVolume || listing.productionCapacity) && (
+              <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-950/30">
+                <h3 className="mb-2 flex items-center gap-2 font-semibold text-emerald-800 dark:text-emerald-300">
+                  <Package className="h-4 w-4" />
+                  Información Mayorista
+                </h3>
+                <div className="space-y-1 text-sm text-emerald-700 dark:text-emerald-400">
+                  {listing.minVolume && <p>📦 <strong>Volumen mínimo:</strong> {listing.minVolume}</p>}
+                  {listing.productionCapacity && <p>🏭 <strong>Capacidad productiva:</strong> {listing.productionCapacity}</p>}
+                </div>
+              </div>
+            )}
+
             <Separator className="my-4" />
 
             {/* Contact Actions */}
@@ -200,6 +215,10 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
                     listingTitle={listing.title}
                     sellerId={listing.userId}
                   />
+                )}
+
+                {!isOwnListing && (
+                  <ReportButton listingId={listing.id} />
                 )}
               </div>
             </div>

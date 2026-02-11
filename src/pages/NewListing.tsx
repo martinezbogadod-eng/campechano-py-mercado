@@ -2,15 +2,18 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
+import { useCanPublish, useUserRoles } from '@/hooks/useUserRoles';
 import Header from '@/components/Header';
 import ListingForm from '@/components/ListingForm';
-import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { ArrowLeft, AlertCircle, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const NewListing = () => {
   const { user, loading } = useAuth();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const { data: roles, isLoading: rolesLoading } = useUserRoles();
+  const canPublish = useCanPublish();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,10 +30,44 @@ const NewListing = () => {
     profile?.phone_whatsapp
   );
 
-  if (loading || profileLoading) {
+  if (loading || profileLoading || rolesLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  // Block consumers from publishing
+  if (!canPublish) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-6">
+          <div className="mb-6">
+            <Button variant="ghost" onClick={() => navigate('/')}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver
+            </Button>
+          </div>
+          <div className="mx-auto max-w-2xl">
+            <Alert variant="destructive">
+              <ShieldAlert className="h-4 w-4" />
+              <AlertTitle>No podés publicar</AlertTitle>
+              <AlertDescription>
+                Tu segmento actual (Consumidor) no permite publicar anuncios. 
+                Solo productores y prestadores de servicios pueden publicar contenido.
+                <Button
+                  variant="link"
+                  className="ml-2 h-auto p-0 text-destructive underline"
+                  onClick={() => navigate('/onboarding')}
+                >
+                  Cambiar segmento
+                </Button>
+              </AlertDescription>
+            </Alert>
+          </div>
+        </main>
       </div>
     );
   }

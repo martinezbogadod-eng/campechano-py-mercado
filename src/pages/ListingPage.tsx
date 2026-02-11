@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock, ArrowLeft, Share2, Pencil, Trash2, Package } from 'lucide-react';
+import { MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock, ArrowLeft, Share2, Pencil, Trash2, Package, Flag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -27,6 +27,7 @@ import ChatDialog from '@/components/ChatDialog';
 import SellerInfo from '@/components/SellerInfo';
 import TransactionButton from '@/components/TransactionButton';
 import ListingForm from '@/components/ListingForm';
+import ReportButton from '@/components/ReportButton';
 import { useListings, useDeleteListing, DbListing } from '@/hooks/useListings';
 import { useAuth } from '@/hooks/useAuth';
 import { CATEGORIES, PriceUnit, Listing } from '@/types/listing';
@@ -347,6 +348,10 @@ const ListingPage = () => {
                     listingTitle={listing.title}
                     sellerId={listing.userId}
                   />
+                )}
+
+                {!isOwnListing && (
+                  <ReportButton listingId={listing.id} />
                 )}
               </div>
             </div>
