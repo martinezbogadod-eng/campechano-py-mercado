@@ -1,7 +1,7 @@
 import { MapPin, Star, Package } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Listing, CATEGORIES } from '@/types/listing';
+import { Listing, CATEGORIES, LISTING_TYPE_INFO } from '@/types/listing';
 import { getOptimizedImageUrl } from '@/lib/imageUtils';
 import { useLanguage } from '@/hooks/useLanguage';
 
@@ -28,6 +28,7 @@ const formatPrice = (price: number | null, currency: 'PYG' | 'USD', priceUnit: s
 
 const ListingCard = ({ listing, onClick }: ListingCardProps) => {
   const category = CATEGORIES[listing.category];
+  const typeInfo = LISTING_TYPE_INFO[listing.listingType];
   const { t } = useLanguage();
 
   return (
@@ -44,6 +45,10 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute left-2 top-2 flex flex-col gap-1">
+          {/* Listing Type Badge */}
+          <Badge className={`gap-1 ${typeInfo.color}`}>
+            {typeInfo.emoji} {typeInfo.label}
+          </Badge>
           {listing.featured && (
             <Badge className="gap-1 bg-featured text-featured-foreground">
               <Star className="h-3 w-3 fill-current" />
@@ -67,9 +72,14 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
         <h3 className="mb-2 line-clamp-2 text-base font-semibold leading-tight text-foreground group-hover:text-primary">
           {listing.title}
         </h3>
-        <p className="mb-3 text-xl font-bold text-primary">
+        <p className="mb-2 text-xl font-bold text-primary">
           {formatPrice(listing.price, listing.currency, listing.priceUnit)}
         </p>
+        {listing.quantity && listing.quantityUnit && (
+          <p className="mb-2 text-sm text-muted-foreground">
+            📏 {listing.quantity} {listing.quantityUnit}
+          </p>
+        )}
         {listing.isWholesale && listing.minVolume && (
           <p className="mb-2 text-xs text-muted-foreground">
             📦 {t('listing.minVolume')}: {listing.minVolume}

@@ -30,7 +30,7 @@ import ListingForm from '@/components/ListingForm';
 import ReportButton from '@/components/ReportButton';
 import { useListings, useDeleteListing, DbListing } from '@/hooks/useListings';
 import { useAuth } from '@/hooks/useAuth';
-import { CATEGORIES, PriceUnit, Listing } from '@/types/listing';
+import { CATEGORIES, PriceUnit, Listing, LISTING_TYPE_INFO } from '@/types/listing';
 import { toast } from 'sonner';
 
 const formatPrice = (price: number | null, currency: 'PYG' | 'USD', priceUnit: string | null) => {
@@ -101,6 +101,9 @@ const ListingPage = () => {
       isWholesale: dbListing.is_wholesale ?? false,
       minVolume: dbListing.min_volume ?? null,
       productionCapacity: dbListing.production_capacity ?? null,
+      listingType: dbListing.listing_type || 'oferta',
+      quantity: dbListing.quantity ?? null,
+      quantityUnit: dbListing.quantity_unit ?? null,
     };
   }, [dbListing]);
 
@@ -230,6 +233,10 @@ const ListingPage = () => {
           <div className="bg-card rounded-xl border p-6">
             {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-4">
+              {/* Listing Type Badge */}
+              <Badge className={`gap-1 ${LISTING_TYPE_INFO[listing.listingType].color}`}>
+                {LISTING_TYPE_INFO[listing.listingType].emoji} {LISTING_TYPE_INFO[listing.listingType].label}
+              </Badge>
               {listing.featured && (
                 <Badge className="gap-1 bg-featured text-featured-foreground">
                   <Star className="h-3 w-3 fill-current" />
@@ -306,6 +313,13 @@ const ListingPage = () => {
 
             <Separator className="my-4" />
 
+            {/* Quantity info */}
+            {listing.quantity && listing.quantityUnit && (
+              <div className="mb-4 rounded-lg bg-muted/50 p-3 text-sm text-muted-foreground">
+                📏 <strong>Cantidad:</strong> {listing.quantity} {listing.quantityUnit}
+              </div>
+            )}
+
             {/* Actions */}
             <div className="flex flex-col gap-3">
               {!isOwnListing && (
@@ -353,6 +367,10 @@ const ListingPage = () => {
                 {!isOwnListing && (
                   <ReportButton listingId={listing.id} />
                 )}
+              </div>
+              {/* Platform Disclaimer */}
+              <div className="mt-4 rounded-lg border border-border bg-muted/30 p-3 text-center text-xs text-muted-foreground">
+                ⚠️ KAMPS PY es una plataforma de interconexión. Las transacciones y documentaciones son responsabilidad exclusiva de los usuarios.
               </div>
             </div>
           </div>

@@ -28,6 +28,10 @@ export interface DbListing {
   is_wholesale: boolean;
   min_volume: string | null;
   production_capacity: string | null;
+  // Type and quantity
+  listing_type: 'oferta' | 'demanda' | 'servicio';
+  quantity: number | null;
+  quantity_unit: string | null;
 }
 
 export interface ListingInsert {
@@ -50,6 +54,10 @@ export interface ListingInsert {
   is_wholesale?: boolean;
   min_volume?: string | null;
   production_capacity?: string | null;
+  // Type and quantity
+  listing_type?: 'oferta' | 'demanda' | 'servicio';
+  quantity?: number | null;
+  quantity_unit?: string | null;
 }
 
 export function useListings() {
