@@ -114,12 +114,15 @@ export type Database = {
           images: string[] | null
           is_wholesale: boolean
           lat: number | null
+          listing_type: Database["public"]["Enums"]["listing_type"]
           lon: number | null
           min_volume: string | null
           phone_whatsapp: string
           price: number | null
           price_unit: string | null
           production_capacity: string | null
+          quantity: number | null
+          quantity_unit: string | null
           show_whatsapp_public: boolean
           title: string
           updated_at: string
@@ -139,12 +142,15 @@ export type Database = {
           images?: string[] | null
           is_wholesale?: boolean
           lat?: number | null
+          listing_type?: Database["public"]["Enums"]["listing_type"]
           lon?: number | null
           min_volume?: string | null
           phone_whatsapp: string
           price?: number | null
           price_unit?: string | null
           production_capacity?: string | null
+          quantity?: number | null
+          quantity_unit?: string | null
           show_whatsapp_public?: boolean
           title: string
           updated_at?: string
@@ -164,12 +170,15 @@ export type Database = {
           images?: string[] | null
           is_wholesale?: boolean
           lat?: number | null
+          listing_type?: Database["public"]["Enums"]["listing_type"]
           lon?: number | null
           min_volume?: string | null
           phone_whatsapp?: string
           price?: number | null
           price_unit?: string | null
           production_capacity?: string | null
+          quantity?: number | null
+          quantity_unit?: string | null
           show_whatsapp_public?: boolean
           title?: string
           updated_at?: string
@@ -384,6 +393,36 @@ export type Database = {
           },
         ]
       }
+      user_capabilities: {
+        Row: {
+          admin_notes: string | null
+          capability: string
+          id: string
+          requested_at: string
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          capability: string
+          id?: string
+          requested_at?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          capability?: string
+          id?: string
+          requested_at?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -439,6 +478,7 @@ export type Database = {
         | "servicios"
         | "forestal"
         | "viveros"
+      listing_type: "oferta" | "demanda" | "servicio"
       profile_type: "productor" | "tecnico" | "proveedor"
     }
     CompositeTypes: {
@@ -585,6 +625,7 @@ export const Constants = {
         "forestal",
         "viveros",
       ],
+      listing_type: ["oferta", "demanda", "servicio"],
       profile_type: ["productor", "tecnico", "proveedor"],
     },
   },

@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Listing, CATEGORIES } from '@/types/listing';
+import { Listing, CATEGORIES, LISTING_TYPE_INFO } from '@/types/listing';
 import { useAuth } from '@/hooks/useAuth';
 import ImageGallery from './ImageGallery';
 import ChatDialog from './ChatDialog';
@@ -111,7 +111,10 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
 
           <div className="p-6 text-foreground">
             <DialogHeader className="mb-4 text-left">
-              <div className="mb-2">
+              <div className="mb-2 flex flex-wrap gap-2">
+                <Badge className={`gap-1 ${LISTING_TYPE_INFO[listing.listingType].color}`}>
+                  {LISTING_TYPE_INFO[listing.listingType].emoji} {LISTING_TYPE_INFO[listing.listingType].label}
+                </Badge>
                 <Badge variant="secondary" className="text-sm">
                   {category.emoji} {category.label}
                 </Badge>
@@ -198,6 +201,11 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
                   </span>
                 </div>
               )}
+
+              {/* Platform Disclaimer */}
+              <div className="mt-2 rounded-lg border border-border bg-muted/30 p-3 text-center text-xs text-muted-foreground">
+                ⚠️ KAMPS PY es una plataforma de interconexión. Las transacciones y documentaciones son responsabilidad exclusiva de los usuarios.
+              </div>
 
               <div className="flex gap-3">
                 <Button

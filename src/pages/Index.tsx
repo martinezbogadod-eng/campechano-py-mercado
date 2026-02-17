@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import SearchFilters from '@/components/SearchFilters';
 import CategoryBar from '@/components/CategoryBar';
@@ -41,6 +42,9 @@ const Index = () => {
       isWholesale: l.is_wholesale ?? false,
       minVolume: l.min_volume ?? null,
       productionCapacity: l.production_capacity ?? null,
+      listingType: l.listing_type || 'oferta',
+      quantity: l.quantity ?? null,
+      quantityUnit: l.quantity_unit ?? null,
     }));
   }, [dbListings]);
 
@@ -150,10 +154,16 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="border-t bg-card py-6">
-        <div className="container text-center text-sm text-muted-foreground">
+        <div className="container text-center text-sm text-muted-foreground space-y-2">
           <p>
-            © 2024 Campechano Py Local. Conectando al campo paraguayo 🇵🇾
+            © 2026 KAMPS PY. Conectando al campo paraguayo 🇵🇾
           </p>
+          <p className="text-xs">
+            KAMPS PY es una plataforma de interconexión. Las transacciones son responsabilidad exclusiva de los usuarios.
+          </p>
+          <Link to="/terminos" className="text-xs text-primary hover:underline">
+            Términos y Condiciones
+          </Link>
         </div>
       </footer>
     </div>

@@ -19,8 +19,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { useIsWholesale, useUserRoles, isProducerRole } from '@/hooks/useUserRoles';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCreateListing, useUpdateListing, uploadListingImage, DbListing } from '@/hooks/useListings';
-import { CATEGORIES, DEPARTMENTS, Category, PRICE_UNITS, PriceUnit } from '@/types/listing';
+import { CATEGORIES, DEPARTMENTS, Category, PRICE_UNITS, PriceUnit, QUANTITY_UNITS, LISTING_TYPE_INFO, ListingType } from '@/types/listing';
 import { Loader2, Upload, X, Shield, Package } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 const listingSchema = z.object({
   title: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
@@ -35,6 +36,9 @@ const listingSchema = z.object({
   // Wholesale fields
   min_volume: z.string().optional(),
   production_capacity: z.string().optional(),
+  // Quantity fields
+  quantity: z.string().min(1, 'Ingresa la cantidad'),
+  quantity_unit: z.string().min(1, 'Selecciona la unidad'),
 });
 
 type ListingFormData = z.infer<typeof listingSchema>;
@@ -48,6 +52,9 @@ interface ListingFormProps {
 export default function ListingForm({ listing, onSuccess, onCancel }: ListingFormProps) {
   const [images, setImages] = useState<string[]>(listing?.images || []);
   const [isUploading, setIsUploading] = useState(false);
+  const [listingType, setListingType] = useState<ListingType>(
+    (listing?.listing_type as ListingType) || 'oferta'
+  );
   const [priceType, setPriceType] = useState<'fixed' | 'negotiable'>(
     listing?.price === null ? 'negotiable' : 'fixed'
   );
@@ -78,14 +85,11 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
   
   const getAllowedCategories = () => {
     if (isServiceProvider && !isProducer) {
-      // Service providers can only post services
       return Object.entries(CATEGORIES).filter(([key]) => key === 'servicios');
     }
     if (isProducer && !isServiceProvider) {
-      // Producers can only post products (not services)
       return Object.entries(CATEGORIES).filter(([key]) => key !== 'servicios');
     }
-    // Both roles or admin: all categories
     return Object.entries(CATEGORIES);
   };
 
@@ -111,6 +115,8 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
       phone_whatsapp: listing?.phone_whatsapp || '',
       min_volume: listing?.min_volume || '',
       production_capacity: listing?.production_capacity || '',
+      quantity: listing?.quantity?.toString() || '',
+      quantity_unit: listing?.quantity_unit || '',
     },
   });
 
@@ -130,7 +136,6 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
       return;
     }
 
-    // Validate file types
     const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
     for (const file of files) {
       if (!validTypes.includes(file.type)) {
@@ -166,7 +171,6 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
   };
 
   const onSubmit = async (data: ListingFormData) => {
-    // Validate price unit when price is fixed
     if (priceType === 'fixed' && !selectedPriceUnit) {
       toast({
         variant: 'destructive',
@@ -191,10 +195,12 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         featured: false,
         allow_whatsapp_contact: allowWhatsapp,
         show_whatsapp_public: showWhatsappPublic,
-        // Wholesale fields
         is_wholesale: isWholesaleUser && isWholesaleListing,
         min_volume: isWholesaleUser && isWholesaleListing ? data.min_volume || null : null,
         production_capacity: isWholesaleUser && isWholesaleListing ? data.production_capacity || null : null,
+        listing_type: listingType,
+        quantity: data.quantity ? parseFloat(data.quantity) : null,
+        quantity_unit: data.quantity_unit || null,
       };
 
       if (listing) {
@@ -222,12 +228,39 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {/* Listing Type */}
+      <div className="space-y-2">
+        <Label>Tipo de publicación *</Label>
+        <div className="flex gap-2 flex-wrap">
+          {(Object.entries(LISTING_TYPE_INFO) as [ListingType, typeof LISTING_TYPE_INFO[ListingType]][]).map(([key, info]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setListingType(key)}
+              className="focus:outline-none"
+            >
+              <Badge
+                className={`cursor-pointer px-4 py-2 text-sm transition-all ${
+                  listingType === key ? info.color : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                {info.emoji} {info.label}
+              </Badge>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Title */}
       <div className="space-y-2">
         <Label htmlFor="title">Título del anuncio *</Label>
         <Input
           id="title"
-          placeholder="Ej: Soja de primera calidad - Cosecha 2024"
+          placeholder={
+            listingType === 'oferta' ? 'Ej: Soja de primera calidad - Cosecha 2024' :
+            listingType === 'demanda' ? 'Ej: Busco 500 Tn de maíz para exportación' :
+            'Ej: Servicio de fumigación con drones'
+          }
           {...register('title')}
         />
         {errors.title && (
@@ -256,6 +289,43 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         {errors.category && (
           <p className="text-sm text-destructive">{errors.category.message}</p>
         )}
+      </div>
+
+      {/* Quantity + Unit (Required) */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="quantity">Cantidad *</Label>
+          <Input
+            id="quantity"
+            type="number"
+            placeholder="Ej: 100"
+            {...register('quantity')}
+          />
+          {errors.quantity && (
+            <p className="text-sm text-destructive">{errors.quantity.message}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label>Unidad de medida *</Label>
+          <Select
+            value={watch('quantity_unit')}
+            onValueChange={(value) => setValue('quantity_unit', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecciona unidad" />
+            </SelectTrigger>
+            <SelectContent>
+              {QUANTITY_UNITS.map((unit) => (
+                <SelectItem key={unit} value={unit}>
+                  {unit}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.quantity_unit && (
+            <p className="text-sm text-destructive">{errors.quantity_unit.message}</p>
+          )}
+        </div>
       </div>
 
       {/* Location */}
@@ -338,7 +408,6 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
               />
             </div>
             
-            {/* Price Unit */}
             <div className="space-y-2">
               <Label>Unidad de precio *</Label>
               <Select
@@ -361,7 +430,7 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         )}
       </div>
 
-      {/* Wholesale Settings - Only for wholesale producers */}
+      {/* Wholesale Settings */}
       {isWholesaleUser && (
         <div className="space-y-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-950/30">
           <div className="flex items-center gap-2">
@@ -412,7 +481,11 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
         <Label htmlFor="description">Descripción *</Label>
         <Textarea
           id="description"
-          placeholder="Describe tu producto o servicio en detalle..."
+          placeholder={
+            listingType === 'demanda' 
+              ? 'Describí qué producto necesitás, especificaciones, plazos de entrega...'
+              : 'Describe tu producto o servicio en detalle...'
+          }
           rows={4}
           {...register('description')}
         />

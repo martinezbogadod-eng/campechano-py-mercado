@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Shield, Star, Trash2, Check, X, Flag, UserCog, Users, BarChart3,
-  Ban, CheckCircle, Eye,
+  Ban, CheckCircle, Eye, ShieldCheck,
 } from 'lucide-react';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,7 @@ import { useAdminReports, useUpdateReport } from '@/hooks/useReports';
 import { useAdminRoleChangeRequests, useApproveRoleChange, useRejectRoleChange } from '@/hooks/useRoleChangeRequests';
 import { useAdminUsers, useToggleUserSuspension } from '@/hooks/useAdminUsers';
 import { ROLE_INFO, SelectableRole } from '@/hooks/useUserRoles';
+import { useAllCapabilityRequests, useUpdateCapabilityStatus, CAPABILITY_INFO, Capability } from '@/hooks/useCapabilities';
 
 export default function AdminPanel() {
   const [deleteListingId, setDeleteListingId] = useState<string | null>(null);
@@ -43,10 +44,12 @@ export default function AdminPanel() {
   const { data: reports, isLoading: reportsLoading } = useAdminReports();
   const { data: roleChangeRequests, isLoading: roleRequestsLoading } = useAdminRoleChangeRequests();
   const { data: adminUsers, isLoading: usersLoading } = useAdminUsers();
+  const { data: capabilityRequests, isLoading: capsLoading } = useAllCapabilityRequests();
   const updateReport = useUpdateReport();
   const approveRoleChange = useApproveRoleChange();
   const rejectRoleChange = useRejectRoleChange();
   const toggleSuspension = useToggleUserSuspension();
+  const updateCapability = useUpdateCapabilityStatus();
   const { toast } = useToast();
 
   const approveFeatured = useApproveFeaturedRequest();
@@ -81,6 +84,7 @@ export default function AdminPanel() {
   const pendingRequests = requests?.filter((r) => r.status === 'pending') || [];
   const pendingReports = reports?.filter((r) => r.status === 'pending') || [];
   const pendingRoleRequests = roleChangeRequests?.filter((r) => r.status === 'pending') || [];
+  const pendingCapRequests = capabilityRequests?.filter((r) => r.status === 'pending') || [];
   const featuredListings = listings?.filter((l) => l.featured) || [];
   const totalUsers = adminUsers?.length || 0;
   const suspendedUsers = adminUsers?.filter(u => u.suspended).length || 0;
@@ -284,6 +288,12 @@ export default function AdminPanel() {
               {t('admin.roleRequests')}
               {pendingRoleRequests.length > 0 && (
                 <Badge className="ml-1 bg-accent text-accent-foreground text-xs">{pendingRoleRequests.length}</Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="capabilities" className="relative">
+              <ShieldCheck className="mr-1 h-4 w-4" /> Capacidades
+              {pendingCapRequests.length > 0 && (
+                <Badge className="ml-1 bg-accent text-accent-foreground text-xs">{pendingCapRequests.length}</Badge>
               )}
             </TabsTrigger>
           </TabsList>
@@ -560,6 +570,80 @@ export default function AdminPanel() {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Capabilities Tab */}
+          <TabsContent value="capabilities" className="mt-4">
+            {capsLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : !capabilityRequests?.length ? (
+              <div className="rounded-lg border p-8 text-center">
+                <p className="text-muted-foreground">No hay solicitudes de capacidades.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {capabilityRequests.map((req) => {
+                  const capInfo = CAPABILITY_INFO[req.capability as Capability];
+                  return (
+                    <Card key={req.id}>
+                      <CardContent className="p-4">
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <ShieldCheck className="h-4 w-4 text-primary" />
+                              <p className="font-medium">
+                                {capInfo?.emoji} {capInfo?.label || req.capability}
+                              </p>
+                              <Badge variant={req.status === 'pending' ? 'secondary' : req.status === 'approved' ? 'default' : 'destructive'}>
+                                {req.status === 'pending' ? 'Pendiente' : req.status === 'approved' ? 'Aprobado' : 'Rechazado'}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Usuario: {req.user_id.slice(0, 8)}... • {new Date(req.requested_at).toLocaleDateString('es-PY')}
+                            </p>
+                          </div>
+                          {req.status === 'pending' && (
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={async () => {
+                                  try {
+                                    await updateCapability.mutateAsync({ id: req.id, status: 'approved' });
+                                    toast({ title: 'Capacidad aprobada' });
+                                  } catch {
+                                    toast({ variant: 'destructive', title: t('common.error') });
+                                  }
+                                }}
+                                disabled={updateCapability.isPending}
+                              >
+                                <Check className="mr-1 h-4 w-4" /> Aprobar
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={async () => {
+                                  try {
+                                    await updateCapability.mutateAsync({ id: req.id, status: 'rejected' });
+                                    toast({ title: 'Capacidad rechazada' });
+                                  } catch {
+                                    toast({ variant: 'destructive', title: t('common.error') });
+                                  }
+                                }}
+                                disabled={updateCapability.isPending}
+                              >
+                                <X className="mr-1 h-4 w-4" /> Rechazar
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </TabsContent>
