@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import ListingPage from "./pages/ListingPage";
 import RoleOnboarding from "./pages/RoleOnboarding";
 import Terms from "./pages/Terms";
+import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
