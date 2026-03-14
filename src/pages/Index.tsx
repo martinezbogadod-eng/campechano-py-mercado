@@ -6,6 +6,7 @@ import CategoryBar from '@/components/CategoryBar';
 import ListingGrid from '@/components/ListingGrid';
 import { useListings, DbListing } from '@/hooks/useListings';
 import { Category, Listing, CATEGORIES, PriceUnit } from '@/types/listing';
+import banderaParaguay from '@/assets/bandera-paraguay.mp4';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
