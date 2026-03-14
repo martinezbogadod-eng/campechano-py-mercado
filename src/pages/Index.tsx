@@ -162,15 +162,15 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-card py-6">
-        <div className="container text-center text-sm text-muted-foreground space-y-2">
-          <p>
+      <footer className="border-t bg-card py-8">
+        <div className="container text-center space-y-3">
+          <p className="font-heading text-base font-semibold text-foreground">
             © 2026 KAMPS PY. Conectando al campo paraguayo 🇵🇾
           </p>
-          <p className="text-xs">
+          <p className="text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
             KAMPS PY es una plataforma de interconexión. Las transacciones son responsabilidad exclusiva de los usuarios.
           </p>
-          <Link to="/terminos" className="text-xs text-primary hover:underline">
+          <Link to="/terminos" className="inline-block text-sm font-medium text-primary hover:text-primary/80 hover:underline transition-colors">
             Términos y Condiciones
           </Link>
         </div>
