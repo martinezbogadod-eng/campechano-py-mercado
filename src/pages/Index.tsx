@@ -162,9 +162,9 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-card py-6">
+      <footer className="border-t bg-muted py-6">
         <div className="container text-center text-sm text-muted-foreground space-y-2">
-          <p>
+          <p className="font-heading font-semibold">
             © 2026 KAMPS PY. Conectando al campo paraguayo 🇵🇾
           </p>
           <p className="text-xs">
