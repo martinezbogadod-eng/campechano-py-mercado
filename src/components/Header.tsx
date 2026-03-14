@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Leaf, Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -37,18 +37,8 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-            <Leaf className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-bold leading-tight text-foreground">
-              Kamps Py
-            </span>
-            <span className="text-xs font-medium text-muted-foreground">
-              {t('header.subtitle')}
-            </span>
-          </div>
+        <Link to="/" className="flex items-center">
+          <Logo size="md" showText={true} />
         </Link>
 
         <div className="flex items-center gap-2">
