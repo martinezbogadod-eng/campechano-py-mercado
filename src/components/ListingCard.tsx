@@ -33,7 +33,7 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
 
   return (
     <Card
-      className="group cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in"
+      className="group cursor-pointer overflow-hidden card-hover animate-fade-in"
       onClick={onClick}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
