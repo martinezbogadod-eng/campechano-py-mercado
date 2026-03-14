@@ -145,7 +145,7 @@ const PublicProfile = () => {
                     title: listing.title,
                     description: listing.description,
                     price: listing.price,
-                    priceUnit: listing.price_unit,
+                    priceUnit: listing.price_unit as any,
                     currency: listing.currency as 'PYG' | 'USD',
                     category: listing.category,
                     department: listing.department,
