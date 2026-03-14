@@ -241,7 +241,8 @@ const Auth = () => {
                 </Button>
               </form>
             </TabsContent>
-          </Tabs>
+            </Tabs>
+          )}
 
           <div className="mt-6 text-center">
             <Button variant="ghost" onClick={() => navigate('/')}>
