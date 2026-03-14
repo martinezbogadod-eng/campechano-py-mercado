@@ -96,9 +96,19 @@ const Index = () => {
       <main className="container py-6">
         {/* Hero section */}
         <div className="mb-8 text-center">
-          <h1 className="mb-2 text-3xl font-extrabold text-foreground sm:text-4xl">
-            Mercado Agrícola de Paraguay 🌾
-          </h1>
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <h1 className="text-3xl font-extrabold text-foreground sm:text-4xl">
+              Mercado Agrícola de Paraguay
+            </h1>
+            <video
+              src={banderaParaguay}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="h-10 w-auto sm:h-12"
+            />
+          </div>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
             Compra y vende productos, insumos y servicios agrícolas. 
             Conectamos al campo paraguayo.
