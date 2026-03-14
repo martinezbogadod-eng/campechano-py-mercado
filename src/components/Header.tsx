@@ -137,7 +137,7 @@ const Header = () => {
               <Button variant="outline" onClick={() => navigate('/auth')} size="sm">
                 {t('header.login')}
               </Button>
-              <Button onClick={() => navigate('/auth')} size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-semibold">
+              <Button onClick={() => navigate('/auth')} size="sm">
                 <Plus className="mr-1 h-4 w-4" />
                 <span className="hidden sm:inline">{t('header.publish')}</span>
               </Button>
