@@ -16,16 +16,26 @@ const ResetPassword = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check hash params for recovery type
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     if (hashParams.get('type') === 'recovery') {
       setIsRecovery(true);
     }
 
-    supabase.auth.onAuthStateChange((event) => {
+    // Check if user already has a session (arrived via recovery link which auto-logs in)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setIsRecovery(true);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
         setIsRecovery(true);
       }
     });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleReset = async (e: React.FormEvent) => {
