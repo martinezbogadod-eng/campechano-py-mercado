@@ -18,6 +18,7 @@ import ListingPage from "./pages/ListingPage";
 import RoleOnboarding from "./pages/RoleOnboarding";
 import Terms from "./pages/Terms";
 import PublicProfile from "./pages/PublicProfile";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -75,6 +76,7 @@ function AppRoutes() {
       <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
       <Route path="/anuncio/:id" element={<OnboardingGuard><ListingPage /></OnboardingGuard>} />
       <Route path="/perfil/:userId" element={<PublicProfile />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/terminos" element={<Terms />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
