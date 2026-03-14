@@ -13,8 +13,8 @@ const Logo = ({ size = 'md', showText = true, variant = 'light' }: LogoProps) =>
 
   const { circle, icon } = dimensions[size];
   
-  // Color del círculo: Navy Blue
-  const circleColor = '#1e3a8a';
+  // Color del círculo: usar el verde del logo (#2d7a4f)
+  const circleColor = '#2d7a4f';
   
   // Colores de texto según variante
   const textColor = variant === 'dark' ? '#ffffff' : '#1a1a1a';
