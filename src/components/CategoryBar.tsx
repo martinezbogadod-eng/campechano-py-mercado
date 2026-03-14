@@ -12,10 +12,10 @@ const CategoryBar = ({ selectedCategory, onCategoryChange }: CategoryBarProps) =
       <button
         onClick={() => onCategoryChange('all')}
         className={cn(
-          'flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-heading font-medium transition-all',
+          'flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all',
           selectedCategory === 'all'
-            ? 'bg-accent text-accent-foreground shadow-md'
-            : 'bg-secondary text-secondary-foreground hover:bg-accent/10 hover:text-accent'
+            ? 'bg-primary text-primary-foreground shadow-md'
+            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
         )}
       >
         <span>📦</span>
