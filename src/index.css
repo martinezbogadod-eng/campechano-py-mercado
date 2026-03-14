@@ -134,16 +134,15 @@ html {
 /* Card hover animation */
 @layer components {
   .card-hover {
-    @apply transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)];
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .card-hover:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 24px -8px hsl(var(--foreground) / 0.12);
   }
 
-  /* Button hover subtle scale */
   .btn-hover {
-    @apply transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)];
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .btn-hover:hover {
     transform: scale(1.03);
