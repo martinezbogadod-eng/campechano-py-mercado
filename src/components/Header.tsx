@@ -5,6 +5,7 @@ import { useUserRoles, useCanPublish, ROLE_INFO, SelectableRole } from '@/hooks/
 import { useConversations } from '@/hooks/useMessages';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import Logo from '@/components/Logo';
 import LanguageSelector from '@/components/LanguageSelector';
 import {
   DropdownMenu,
@@ -13,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import Logo from '@/components/Logo';
+import { Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle } from 'lucide-react';
 
 const Header = () => {
   const { user, signOut } = useAuth();
