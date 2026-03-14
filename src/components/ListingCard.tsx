@@ -69,10 +69,10 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
         </div>
       </div>
       <CardContent className="p-4">
-        <h3 className="mb-2 line-clamp-2 text-base font-semibold leading-tight text-foreground group-hover:text-primary">
+        <h3 className="mb-2 line-clamp-2 text-base font-heading font-semibold leading-tight text-foreground group-hover:text-primary">
           {listing.title}
         </h3>
-        <p className="mb-2 text-xl font-bold text-primary">
+        <p className="mb-2 text-xl font-bold text-accent">
           {formatPrice(listing.price, listing.currency, listing.priceUnit)}
         </p>
         {listing.quantity && listing.quantityUnit && (

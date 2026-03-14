@@ -2,48 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
-
-/* Campechano Py Local - Agricultural Marketplace Design System */
+/* Kamps Py - Agricultural Marketplace Design System */
+/* Fonts: Montserrat (headings) + Roboto (body) loaded via index.html */
 
 @layer base {
   :root {
-    /* Soft, earthy agricultural palette */
-    --background: 40 30% 97%;
-    --foreground: 25 20% 15%;
+    /* Primary - Navy Blue (professional, trust) */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 10%;
 
-    --card: 40 40% 99%;
-    --card-foreground: 25 20% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
 
-    --popover: 40 40% 99%;
-    --popover-foreground: 25 20% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
 
-    /* Primary: Fresh agricultural green */
-    --primary: 142 45% 38%;
-    --primary-foreground: 40 40% 98%;
+    /* Primary: Navy Blue #1e3a8a → hsl(224, 64%, 33%) */
+    --primary: 224 64% 33%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Warm wheat/sand */
-    --secondary: 38 50% 92%;
-    --secondary-foreground: 25 30% 25%;
+    /* Secondary: Warm cream/wheat bg */
+    --secondary: 48 80% 95%;
+    --secondary-foreground: 240 10% 15%;
 
-    /* Muted: Soft sage */
-    --muted: 100 20% 92%;
-    --muted-foreground: 100 10% 45%;
+    /* Muted */
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
 
-    /* Accent: Warm amber/orange for highlights */
-    --accent: 32 85% 55%;
-    --accent-foreground: 40 40% 98%;
+    /* Accent/Action: Lime Green #65a30d → hsl(85, 85%, 35%) */
+    --accent: 85 85% 35%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 40 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 40 30% 88%;
-    --input: 40 30% 88%;
-    --ring: 142 45% 38%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 224 64% 33%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom colors for categories */
+    /* Category colors */
     --granos: 45 80% 50%;
     --frutas: 142 50% 45%;
     --ganaderia: 25 60% 45%;
@@ -51,61 +50,76 @@
     --insumos: 160 50% 40%;
     --servicios: 280 40% 50%;
 
-    /* Featured badge */
-    --featured: 32 90% 50%;
-    --featured-foreground: 40 40% 98%;
+    /* Featured badge - orange */
+    --featured: 25 90% 48%;
+    --featured-foreground: 0 0% 100%;
 
-    /* WhatsApp green */
+    /* WhatsApp */
     --whatsapp: 142 70% 40%;
     --whatsapp-foreground: 0 0% 100%;
 
-    --sidebar-background: 40 30% 97%;
-    --sidebar-foreground: 25 20% 15%;
-    --sidebar-primary: 142 45% 38%;
-    --sidebar-primary-foreground: 40 40% 98%;
-    --sidebar-accent: 38 50% 92%;
-    --sidebar-accent-foreground: 25 30% 25%;
-    --sidebar-border: 40 30% 88%;
-    --sidebar-ring: 142 45% 38%;
+    /* Action color (lime green) for buttons */
+    --action: 85 85% 35%;
+    --action-hover: 85 85% 30%;
+    --action-light: 80 78% 95%;
+
+    /* Info / Warning / Success / Error */
+    --success: 85 85% 35%;
+    --warning: 20 90% 48%;
+    --error: 0 72% 51%;
+    --info: 224 64% 40%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-primary: 224 64% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 48 80% 95%;
+    --sidebar-accent-foreground: 240 10% 15%;
+    --sidebar-border: 240 6% 90%;
+    --sidebar-ring: 224 64% 33%;
   }
 
   .dark {
-    --background: 25 20% 10%;
-    --foreground: 40 30% 95%;
+    --background: 224 30% 8%;
+    --foreground: 210 20% 95%;
 
-    --card: 25 20% 12%;
-    --card-foreground: 40 30% 95%;
+    --card: 224 25% 11%;
+    --card-foreground: 210 20% 95%;
 
-    --popover: 25 20% 12%;
-    --popover-foreground: 40 30% 95%;
+    --popover: 224 25% 11%;
+    --popover-foreground: 210 20% 95%;
 
-    --primary: 142 45% 45%;
-    --primary-foreground: 25 20% 10%;
+    --primary: 224 64% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 38 30% 20%;
-    --secondary-foreground: 40 30% 95%;
+    --secondary: 224 20% 18%;
+    --secondary-foreground: 210 20% 95%;
 
-    --muted: 25 15% 20%;
-    --muted-foreground: 40 20% 65%;
+    --muted: 224 15% 18%;
+    --muted-foreground: 210 10% 60%;
 
-    --accent: 32 85% 55%;
-    --accent-foreground: 25 20% 10%;
+    --accent: 85 70% 45%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 60% 45%;
-    --destructive-foreground: 40 30% 95%;
+    --destructive-foreground: 210 20% 95%;
 
-    --border: 25 15% 20%;
-    --input: 25 15% 20%;
-    --ring: 142 45% 45%;
+    --border: 224 15% 18%;
+    --input: 224 15% 18%;
+    --ring: 224 64% 50%;
 
-    --sidebar-background: 25 20% 10%;
-    --sidebar-foreground: 40 30% 95%;
-    --sidebar-primary: 142 45% 45%;
-    --sidebar-primary-foreground: 25 20% 10%;
-    --sidebar-accent: 38 30% 20%;
-    --sidebar-accent-foreground: 40 30% 95%;
-    --sidebar-border: 25 15% 20%;
-    --sidebar-ring: 142 45% 45%;
+    --action: 85 70% 45%;
+    --action-hover: 85 70% 38%;
+    --action-light: 85 40% 15%;
+
+    --sidebar-background: 224 30% 8%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 224 64% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 224 20% 18%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 224 15% 18%;
+    --sidebar-ring: 224 64% 50%;
   }
 }
 
@@ -115,8 +129,25 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Nunito', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+  }
+
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+
+  h3 {
+    @apply text-2xl font-semibold;
   }
 }
 
@@ -149,5 +180,13 @@ html {
   }
   .btn-hover:active {
     transform: scale(0.98);
+  }
+
+  .font-heading {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .font-body {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }

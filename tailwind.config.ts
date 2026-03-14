@@ -14,7 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Nunito', 'sans-serif'],
+        sans: ['Roboto', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        heading: ['Montserrat', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        body: ['Roboto', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -57,6 +59,11 @@ export default {
         whatsapp: {
           DEFAULT: "hsl(var(--whatsapp))",
           foreground: "hsl(var(--whatsapp-foreground))",
+        },
+        action: {
+          DEFAULT: "hsl(var(--action))",
+          hover: "hsl(var(--action-hover))",
+          light: "hsl(var(--action-light))",
         },
         category: {
           granos: "hsl(var(--granos))",

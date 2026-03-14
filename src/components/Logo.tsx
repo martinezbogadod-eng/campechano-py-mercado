@@ -57,7 +57,7 @@ const Logo = ({ size = 'md', showText = true, variant = 'light' }: LogoProps) =>
           />
           <path 
             d="M12 6C10.5 7.5 8 10 8 12C8 14 9 16 10 17" 
-            stroke="#2d7a4f" 
+            stroke="#1e3a8a" 
             strokeWidth="1.5" 
             strokeLinecap="round"
           />

@@ -26,10 +26,10 @@ const CategoryBar = ({ selectedCategory, onCategoryChange }: CategoryBarProps) =
           key={key}
           onClick={() => onCategoryChange(key as Category)}
           className={cn(
-            'flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all',
+            'flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-heading font-medium transition-all',
             selectedCategory === key
-              ? 'bg-primary text-primary-foreground shadow-md'
-              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              ? 'bg-accent text-accent-foreground shadow-md'
+              : 'bg-secondary text-secondary-foreground hover:bg-accent/10 hover:text-accent'
           )}
         >
           <span>{emoji}</span>
