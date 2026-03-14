@@ -62,7 +62,7 @@ export const CATEGORIES: Record<Category, { label: string; emoji: string }> = {
   'insumos': { label: 'Insumos Agrícolas', emoji: '🌱' },
   'servicios': { label: 'Servicios', emoji: '🔧' },
   'forestal': { label: 'Forestal', emoji: '🌳' },
-  'viveros': { label: 'Viveros', emoji: '🪴' },
+  'viveros': { label: 'Viveros', emoji: '🌿' },
 };
 
 export const DEPARTMENTS = [
