@@ -74,6 +74,7 @@ function AppRoutes() {
       <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
       <Route path="/anuncio/:id" element={<OnboardingGuard><ListingPage /></OnboardingGuard>} />
+      <Route path="/perfil/:userId" element={<PublicProfile />} />
       <Route path="/terminos" element={<Terms />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
