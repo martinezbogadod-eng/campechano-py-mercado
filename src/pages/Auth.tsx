@@ -95,20 +95,66 @@ const Auth = () => {
     } else {
       toast({
         title: '¡Registro exitoso!',
-        description: 'Revisa tu email para confirmar tu cuenta.',
+        description: 'Tu cuenta ha sido creada. Ya podés iniciar sesión.',
       });
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) {
+      toast({ variant: 'destructive', title: 'Ingresá tu email' });
+      return;
+    }
+    setIsLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setIsLoading(false);
+    if (error) {
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+    } else {
+      toast({
+        title: 'Email enviado',
+        description: 'Revisá tu bandeja de entrada para restablecer tu contraseña.',
+      });
+      setForgotPassword(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground">🌾 Campechano Py</h1>
-          <p className="text-muted-foreground mt-2">Conectando al campo paraguayo</p>
+        <div className="flex flex-col items-center mb-8">
+          <Logo size="lg" showText={true} variant="light" />
         </div>
 
         <div className="bg-card border rounded-lg p-6 shadow-sm">
+          {forgotPassword ? (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
+              <h2 className="text-lg font-semibold text-foreground text-center">Recuperar contraseña</h2>
+              <p className="text-sm text-muted-foreground text-center">
+                Ingresá tu email y te enviaremos un enlace para restablecer tu contraseña.
+              </p>
+              <div className="space-y-2">
+                <Label htmlFor="forgot-email">Email</Label>
+                <Input
+                  id="forgot-email"
+                  type="email"
+                  placeholder="tu@email.com"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Enviando...' : 'Enviar enlace'}
+              </Button>
+              <Button type="button" variant="ghost" className="w-full" onClick={() => setForgotPassword(false)}>
+                ← Volver al login
+              </Button>
+            </form>
+          ) : (
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
@@ -148,6 +194,15 @@ const Auth = () => {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? 'Ingresando...' : 'Iniciar Sesión'}
                 </Button>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    className="text-sm text-primary hover:underline"
+                    onClick={() => setForgotPassword(true)}
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                </div>
               </form>
             </TabsContent>
 
