@@ -104,7 +104,7 @@ const Index = () => {
           <div className="absolute inset-0 bg-foreground/60" />
           <div className="relative px-6 py-12 text-center sm:py-16">
             <h1 className="text-3xl font-extrabold text-white sm:text-4xl drop-shadow-lg">
-              Mercado Agrícola de Paraguay
+              Mercado Agrícola Digital de Paraguay
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-lg text-white/90 drop-shadow">
               Compra y vende productos, insumos y servicios agrícolas.
