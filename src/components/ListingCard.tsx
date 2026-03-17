@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Listing, CATEGORIES, LISTING_TYPE_INFO } from '@/types/listing';
 import { getOptimizedImageUrl } from '@/lib/imageUtils';
 import { useLanguage } from '@/hooks/useLanguage';
+import { CategoryIcon } from '@/components/CategoryIcon';
 
 interface ListingCardProps {
   listing: Listing;
