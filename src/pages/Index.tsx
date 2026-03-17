@@ -172,7 +172,7 @@ const Index = () => {
       <footer className="border-t bg-card py-8">
         <div className="container text-center">
           <p className="text-base font-semibold text-primary mb-2">
-            Conectamos al campo paraguayo
+            Conectamos al Campo Paraguayo
           </p>
           <p className="text-xs text-muted-foreground">
             {t('home.footer')}
