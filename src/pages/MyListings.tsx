@@ -136,8 +136,8 @@ const MyListings = () => {
                         {listing.title}
                       </h3>
                       {listing.featured && (
-                        <span className="rounded-full bg-featured/10 px-2 py-0.5 text-xs font-medium text-featured">
-                          ⭐ Destacado
+                      <span className="rounded-full bg-featured/10 px-2 py-0.5 text-xs font-medium text-featured">
+                          Destacado
                         </span>
                       )}
                     </div>
