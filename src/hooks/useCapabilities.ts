@@ -4,11 +4,11 @@ import { useAuth } from './useAuth';
 
 export type Capability = 'comprar' | 'publicar_oferta' | 'publicar_demanda' | 'ofrecer_servicio';
 
-export const CAPABILITY_INFO: Record<Capability, { label: string; emoji: string; description: string }> = {
-  comprar: { label: 'Comprar productos', emoji: '🛒', description: 'Permite contactar oferentes y realizar compras' },
-  publicar_oferta: { label: 'Publicar ofertas', emoji: '📦', description: 'Permite publicar productos en venta' },
-  publicar_demanda: { label: 'Publicar demandas', emoji: '🔍', description: 'Permite publicar lo que necesitás comprar' },
-  ofrecer_servicio: { label: 'Ofrecer servicios', emoji: '🔧', description: 'Permite publicar servicios agrícolas' },
+export const CAPABILITY_INFO: Record<Capability, { label: string; icon: string; description: string }> = {
+  comprar: { label: 'Comprar productos', icon: 'shopping-cart', description: 'Permite contactar oferentes y realizar compras' },
+  publicar_oferta: { label: 'Publicar ofertas', icon: 'package', description: 'Permite publicar productos en venta' },
+  publicar_demanda: { label: 'Publicar demandas', icon: 'search', description: 'Permite publicar lo que necesitás comprar' },
+  ofrecer_servicio: { label: 'Ofrecer servicios', icon: 'wrench', description: 'Permite publicar servicios agrícolas' },
 };
 
 export const ALL_CAPABILITIES: Capability[] = ['comprar', 'publicar_oferta', 'publicar_demanda', 'ofrecer_servicio'];
