@@ -244,7 +244,7 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
                   listingType === key ? info.color : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >
-                {info.emoji} {info.label}
+                {info.label}
               </Badge>
             </button>
           ))}
