@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import HeroCarousel from '@/components/HeroCarousel';
 import { useListings } from '@/hooks/useListings';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Category, CATEGORIES } from '@/types/listing';
 import { Search, MessageSquare, ShieldCheck, ArrowRight } from 'lucide-react';
 import { CategoryIcon } from '@/components/CategoryIcon';
@@ -9,81 +10,69 @@ import { CategoryIcon } from '@/components/CategoryIcon';
 const CATEGORY_DATA: {
   key: Category;
   slug: string;
-  description: string;
+  descKey: string;
   image: string;
 }[] = [
   {
     key: 'granos',
     slug: 'granos-cereales',
-    description: 'Soja, maíz, trigo, girasol y más',
+    descKey: 'category.desc.granos',
     image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80',
   },
   {
     key: 'frutas-verduras',
     slug: 'frutas-verduras',
-    description: 'Productos frescos del campo paraguayo',
+    descKey: 'category.desc.frutas-verduras',
     image: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&q=80',
   },
   {
     key: 'ganaderia',
     slug: 'ganaderia',
-    description: 'Ganado vacuno, porcino, avícola y más',
+    descKey: 'category.desc.ganaderia',
     image: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=600&q=80',
   },
   {
     key: 'maquinaria',
     slug: 'maquinaria',
-    description: 'Tractores, implementos y equipos agrícolas',
+    descKey: 'category.desc.maquinaria',
     image: 'https://images.unsplash.com/photo-1530267981375-f0de937f5f13?w=600&q=80',
   },
   {
     key: 'insumos',
     slug: 'insumos-agricolas',
-    description: 'Fertilizantes, agroquímicos y semillas',
+    descKey: 'category.desc.insumos',
     image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80',
   },
   {
     key: 'servicios',
     slug: 'servicios',
-    description: 'Pulverización, siembra, cosecha y asesoría',
+    descKey: 'category.desc.servicios',
     image: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600&q=80',
   },
   {
     key: 'forestal',
     slug: 'forestal',
-    description: 'Madera, plantines y productos forestales',
+    descKey: 'category.desc.forestal',
     image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=600&q=80',
   },
   {
     key: 'viveros',
     slug: 'viveros',
-    description: 'Plantas ornamentales, frutales y forestales',
+    descKey: 'category.desc.viveros',
     image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600&q=80',
   },
 ];
 
-const STEPS = [
-  {
-    icon: Search,
-    title: 'Explorá',
-    description: 'Navegá por categorías y encontrá lo que necesitás para tu campo.',
-  },
-  {
-    icon: MessageSquare,
-    title: 'Conectá',
-    description: 'Contactá directamente al vendedor por chat o WhatsApp.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Transaccioná',
-    description: 'Acordá las condiciones y cerrá el trato de forma segura.',
-  },
+const STEP_KEYS = [
+  { icon: Search, titleKey: 'home.step1Title', descKey: 'home.step1Desc' },
+  { icon: MessageSquare, titleKey: 'home.step2Title', descKey: 'home.step2Desc' },
+  { icon: ShieldCheck, titleKey: 'home.step3Title', descKey: 'home.step3Desc' },
 ];
 
 const Index = () => {
   const { data: dbListings } = useListings();
+  const { t } = useLanguage();
 
-  // Count listings per category
   const countByCategory = (cat: Category) =>
     dbListings?.filter((l) => l.category === cat).length ?? 0;
 
@@ -101,10 +90,10 @@ const Index = () => {
         <section className="container py-12">
           <div className="text-center mb-10">
             <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-3">
-              Explorá nuestras categorías
+              {t('home.exploreCategories')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              Encontrá productos, insumos y servicios para el sector agrícola paraguayo
+              {t('home.exploreCategoriesDesc')}
             </p>
           </div>
 
@@ -112,6 +101,9 @@ const Index = () => {
             {CATEGORY_DATA.map((cat) => {
               const info = CATEGORIES[cat.key];
               const count = countByCategory(cat.key);
+              const countText = t('home.listingsCount')
+                .replace('{count}', String(count))
+                .replace('{plural}', count !== 1 ? 's' : '');
 
               return (
                 <Link
@@ -122,7 +114,7 @@ const Index = () => {
                   <div className="relative h-48 overflow-hidden">
                     <img
                       src={cat.image}
-                      alt={info.label}
+                      alt={t(`category.${cat.key}`)}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
@@ -131,14 +123,14 @@ const Index = () => {
                   </div>
                   <div className="p-5">
                     <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-                      {info.label}
+                      {t(`category.${cat.key}`)}
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                      {cat.description}
+                      {t(cat.descKey)}
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="inline-block rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
-                        {count} anuncio{count !== 1 ? 's' : ''}
+                        {countText}
                       </span>
                       <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>
@@ -154,21 +146,21 @@ const Index = () => {
           <div className="container">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-primary mb-3">
-                ¿Cómo funciona?
+                {t('home.howItWorks')}
               </h2>
               <p className="text-muted-foreground text-lg">
-                Tres pasos simples para conectar con el campo
+                {t('home.howItWorksDesc')}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              {STEPS.map((step, i) => (
+              {STEP_KEYS.map((step, i) => (
                 <div key={i} className="text-center">
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
                     <step.icon className="h-7 w-7" />
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                  <h3 className="text-xl font-semibold text-foreground mb-2">{t(step.titleKey)}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{t(step.descKey)}</p>
                 </div>
               ))}
             </div>
@@ -180,10 +172,10 @@ const Index = () => {
       <footer className="border-t bg-card py-6">
         <div className="container text-center">
           <p className="text-xs text-muted-foreground">
-            © 2026 KAMPS PY — KAMPS PY es una plataforma de interconexión. Las transacciones son responsabilidad exclusiva de los usuarios.
+            {t('home.footer')}
           </p>
           <Link to="/terminos" className="text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors mt-1 inline-block">
-            Términos y Condiciones
+            {t('home.terms')}
           </Link>
         </div>
       </footer>

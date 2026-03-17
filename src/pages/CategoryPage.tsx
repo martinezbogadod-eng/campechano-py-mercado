@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
-import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import ListingGrid from '@/components/ListingGrid';
 import { useListings } from '@/hooks/useListings';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Category, Listing, CATEGORIES, PriceUnit } from '@/types/listing';
 import { Search, Star, ChevronRight, Package } from 'lucide-react';
 import { CategoryIcon } from '@/components/CategoryIcon';
@@ -69,17 +70,6 @@ const CATEGORY_HERO_IMAGES: Record<Category, string[]> = {
   ],
 };
 
-const CATEGORY_DESCRIPTIONS: Record<Category, string> = {
-  granos: 'Explorá ofertas y demandas de soja, maíz, trigo, girasol, arroz y más cereales del campo paraguayo.',
-  'frutas-verduras': 'Productos frescos directo del productor: hortalizas, frutas tropicales y verduras de estación.',
-  ganaderia: 'Ganado vacuno, porcino, avícola, equino y todo lo relacionado al sector pecuario.',
-  maquinaria: 'Tractores, cosechadoras, implementos agrícolas, repuestos y equipos para el campo.',
-  insumos: 'Fertilizantes, agroquímicos, semillas certificadas y todo para tu producción.',
-  servicios: 'Pulverización aérea y terrestre, siembra, cosecha, asesoría técnica y más.',
-  forestal: 'Madera, postes, leña, rollos, plantines forestales y productos del sector.',
-  viveros: 'Plantas ornamentales, frutales, forestales e insumos de vivero.',
-};
-
 /* ── Paraguay departments & cities ── */
 const PARAGUAY_DATA: Record<string, string[]> = {
   'Alto Paraguay': ['Fuerte Olimpo', 'Puerto Casado'],
@@ -110,16 +100,17 @@ const pickRandom = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useLanguage();
 
   const category = slug ? SLUG_TO_CATEGORY[slug] : undefined;
   const categoryInfo = category ? CATEGORIES[category] : undefined;
+  const categoryLabel = category ? t(`category.${category}`) : '';
 
-  // State from URL params
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
-  const [selectedDepartment, setSelectedDepartment] = useState(searchParams.get('dept') || 'all');
-  const [selectedCity, setSelectedCity] = useState(searchParams.get('ciudad') || 'all');
-  const [sortBy, setSortBy] = useState<SortOption>((searchParams.get('orden') as SortOption) || 'recent');
+  // State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedCity, setSelectedCity] = useState('all');
+  const [sortBy, setSortBy] = useState<SortOption>('recent');
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -186,15 +177,12 @@ const CategoryPage = () => {
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
-    // Featured always first
     arr.sort((a, b) => {
       if (a.featured && !b.featured) return -1;
       if (!a.featured && b.featured) return 1;
       return 0;
     });
-    // Then by sort option
     arr.sort((a, b) => {
-      // Keep featured order
       if (a.featured !== b.featured) return 0;
       switch (sortBy) {
         case 'price-asc':
@@ -211,7 +199,6 @@ const CategoryPage = () => {
   const totalPages = Math.max(1, Math.ceil(sorted.length / ITEMS_PER_PAGE));
   const paginatedListings = sorted.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-  // Handler helpers
   const handleDepartmentChange = (value: string) => {
     setSelectedDepartment(value);
     setSelectedCity('all');
@@ -229,14 +216,19 @@ const CategoryPage = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-12 text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Categoría no encontrada</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-4">{t('category.notFound')}</h1>
           <Link to="/">
-            <Button variant="outline">Volver al inicio</Button>
+            <Button variant="outline">{t('category.backHome')}</Button>
           </Link>
         </div>
       </div>
     );
   }
+
+  const resultsText = t('category.resultsCount')
+    .replace('{count}', String(sorted.length))
+    .replace(/{plural}/g, sorted.length !== 1 ? 's' : '')
+    .replace('{name}', categoryLabel);
 
   return (
     <div className="min-h-screen bg-background">
@@ -246,17 +238,17 @@ const CategoryPage = () => {
       <div className="relative h-[200px] sm:h-[300px] overflow-hidden">
         <img
           src={heroImage}
-          alt={categoryInfo.label}
+          alt={categoryLabel}
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-primary/50" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <CategoryIcon name={categoryInfo.icon} className="h-8 w-8 text-white mb-2" />
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-            {categoryInfo.label}
+            {categoryLabel}
           </h1>
           <p className="mt-2 max-w-2xl text-sm sm:text-base text-white/90 drop-shadow">
-            {CATEGORY_DESCRIPTIONS[category]}
+            {t(`category.longDesc.${category}`)}
           </p>
         </div>
       </div>
@@ -264,88 +256,80 @@ const CategoryPage = () => {
       <main className="container py-6">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-6">
-          <Link to="/" className="hover:text-primary transition-colors">Inicio</Link>
+          <Link to="/" className="hover:text-primary transition-colors">{t('category.breadcrumbHome')}</Link>
           <ChevronRight className="h-3 w-3" />
-          <span className="text-muted-foreground">Categorías</span>
+          <span className="text-muted-foreground">{t('category.breadcrumbCategories')}</span>
           <ChevronRight className="h-3 w-3" />
-          <span className="font-medium text-foreground">{categoryInfo.label}</span>
+          <span className="font-medium text-foreground">{categoryLabel}</span>
         </nav>
 
         {/* Filters */}
         <div className="rounded-lg border bg-card p-4 mb-6 space-y-4">
-          {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder={`Buscar en ${categoryInfo.label}...`}
+              placeholder={t('category.searchIn').replace('{name}', categoryLabel)}
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
               className="h-12 pl-10 text-base"
             />
           </div>
 
-          {/* Filter row */}
           <div className="flex flex-wrap items-center gap-3">
-            {/* Department */}
             <Select value={selectedDepartment} onValueChange={handleDepartmentChange}>
               <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Departamento" />
+                <SelectValue placeholder={t('search.department')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">📍 Todos los departamentos</SelectItem>
+                <SelectItem value="all">{t('category.allDepartments')}</SelectItem>
                 {Object.keys(PARAGUAY_DATA).sort().map((dept) => (
                   <SelectItem key={dept} value={dept}>{dept}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            {/* City (cascading) */}
             <Select
               value={selectedCity}
               onValueChange={handleCityChange}
               disabled={selectedDepartment === 'all'}
             >
               <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Ciudad" />
+                <SelectValue placeholder={t('profile.city')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">🏘️ Todas las ciudades</SelectItem>
+                <SelectItem value="all">{t('category.allCities')}</SelectItem>
                 {cities.map((city) => (
                   <SelectItem key={city} value={city}>{city}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            {/* Sort */}
             <Select value={sortBy} onValueChange={(v) => { setSortBy(v as SortOption); setPage(1); }}>
               <SelectTrigger className="w-[220px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="recent">Más recientes</SelectItem>
-                <SelectItem value="price-asc">Precio: menor a mayor</SelectItem>
-                <SelectItem value="price-desc">Precio: mayor a menor</SelectItem>
+                <SelectItem value="recent">{t('category.sortRecent')}</SelectItem>
+                <SelectItem value="price-asc">{t('category.sortPriceAsc')}</SelectItem>
+                <SelectItem value="price-desc">{t('category.sortPriceDesc')}</SelectItem>
               </SelectContent>
             </Select>
 
-            {/* Featured toggle */}
             <Button
               variant={showFeaturedOnly ? 'default' : 'outline'}
               onClick={() => { setShowFeaturedOnly(!showFeaturedOnly); setPage(1); }}
               className="gap-2"
             >
               <Star className={`h-4 w-4 ${showFeaturedOnly ? 'fill-current' : ''}`} />
-              Destacados
+              {t('category.featuredOnly')}
             </Button>
           </div>
         </div>
 
         {/* Results count */}
         <p className="text-sm text-muted-foreground mb-4">
-          {isLoading
-            ? 'Cargando...'
-            : `${sorted.length} anuncio${sorted.length !== 1 ? 's' : ''} encontrado${sorted.length !== 1 ? 's' : ''} en ${categoryInfo.label}`}
+          {isLoading ? t('common.loading') : resultsText}
         </p>
 
         {/* Content */}
@@ -354,26 +338,22 @@ const CategoryPage = () => {
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
         ) : sorted.length === 0 ? (
-          /* Empty state */
           <div className="rounded-lg border bg-card p-12 text-center">
-            <div className="text-5xl mb-4">
-              <Package className="h-12 w-12 mx-auto text-muted-foreground" />
-            </div>
+            <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold text-foreground mb-2">
-              Todavía no hay publicaciones en esta categoría
+              {t('category.emptyTitle')}
             </h3>
             <p className="text-muted-foreground mb-6">
-              Sé el primero en publicar en {categoryInfo.label}
+              {t('category.emptyDesc').replace('{name}', categoryLabel)}
             </p>
             <Button onClick={() => navigate('/publicar')} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              Publicar ahora
+              {t('category.publishNow')}
             </Button>
           </div>
         ) : (
           <>
             <ListingGrid listings={paginatedListings} />
 
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 mt-8">
                 <Button
@@ -382,10 +362,10 @@ const CategoryPage = () => {
                   disabled={page <= 1}
                   onClick={() => setPage(page - 1)}
                 >
-                  Anterior
+                  {t('category.previous')}
                 </Button>
                 <span className="text-sm text-muted-foreground px-3">
-                  Página {page} de {totalPages}
+                  {t('category.pageOf').replace('{page}', String(page)).replace('{total}', String(totalPages))}
                 </span>
                 <Button
                   variant="outline"
@@ -393,7 +373,7 @@ const CategoryPage = () => {
                   disabled={page >= totalPages}
                   onClick={() => setPage(page + 1)}
                 >
-                  Siguiente
+                  {t('category.next')}
                 </Button>
               </div>
             )}
