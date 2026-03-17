@@ -78,23 +78,9 @@ const Index = () => {
       <Header />
 
       <main className="container py-6">
-        {/* Hero section */}
-        <div className="relative mb-8 overflow-hidden rounded-xl">
-          <img
-            src={heroBg}
-            alt="Categorías agrícolas del Paraguay"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-primary/40" />
-          <div className="relative px-6 py-12 text-center sm:py-16">
-            <h1 className="text-3xl font-bold text-white sm:text-4xl drop-shadow-lg">
-              Mercado Agrícola Digital de Paraguay
-            </h1>
-            <p className="mx-auto mt-3 max-w-2xl text-lg text-white/90 drop-shadow">
-              Compra y vende productos, insumos y servicios agrícolas.
-              Conectamos al campo paraguayo.
-            </p>
-          </div>
+        {/* Hero carousel */}
+        <div className="mb-8">
+          <HeroCarousel />
         </div>
 
         {/* Category quick filters */}
