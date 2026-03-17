@@ -4,6 +4,7 @@ import HeroCarousel from '@/components/HeroCarousel';
 import { useListings } from '@/hooks/useListings';
 import { Category, CATEGORIES } from '@/types/listing';
 import { Search, MessageSquare, ShieldCheck, ArrowRight } from 'lucide-react';
+import { CategoryIcon } from '@/components/CategoryIcon';
 
 const CATEGORY_DATA: {
   key: Category;
