@@ -277,7 +277,7 @@ const Profile = () => {
                     const info = CAPABILITY_INFO[cap.capability as Capability];
                     return info ? (
                       <Badge key={cap.id} variant="outline" className="text-xs">
-                        {info.emoji} {info.label}
+                        {info.label}
                       </Badge>
                     ) : null;
                   })}
