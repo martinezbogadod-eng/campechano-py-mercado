@@ -17,9 +17,6 @@ const CATEGORY_DATA: {
     description: 'Soja, maíz, trigo, girasol y más',
     image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80',
   },
-    description: 'Soja, maíz, trigo, girasol y más',
-    image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80',
-  },
   {
     key: 'frutas-verduras',
     slug: 'frutas-verduras',
