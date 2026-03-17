@@ -4,9 +4,9 @@ import Header from '@/components/Header';
 import SearchFilters from '@/components/SearchFilters';
 import CategoryBar from '@/components/CategoryBar';
 import ListingGrid from '@/components/ListingGrid';
+import HeroCarousel from '@/components/HeroCarousel';
 import { useListings, DbListing } from '@/hooks/useListings';
 import { Category, Listing, CATEGORIES, PriceUnit } from '@/types/listing';
-import heroBg from '@/assets/hero-categories-bg.jpg';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
