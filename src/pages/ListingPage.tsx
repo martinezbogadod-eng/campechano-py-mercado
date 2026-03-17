@@ -235,7 +235,7 @@ const ListingPage = () => {
             <div className="flex flex-wrap gap-2 mb-4">
               {/* Listing Type Badge */}
               <Badge className={`gap-1 ${LISTING_TYPE_INFO[listing.listingType].color}`}>
-                {LISTING_TYPE_INFO[listing.listingType].emoji} {LISTING_TYPE_INFO[listing.listingType].label}
+                {LISTING_TYPE_INFO[listing.listingType].label}
               </Badge>
               {listing.featured && (
                 <Badge className="gap-1 bg-featured text-featured-foreground">
