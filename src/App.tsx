@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/hooks/useLanguage";
 import { useNeedsOnboarding } from "@/hooks/useUserRoles";
 import { useAuth } from "@/hooks/useAuth";
 import Index from "./pages/Index";
+import CategoryPage from "./pages/CategoryPage";
 import Auth from "./pages/Auth";
 import NewListing from "./pages/NewListing";
 import MyListings from "./pages/MyListings";
