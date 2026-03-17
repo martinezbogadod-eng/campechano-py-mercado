@@ -40,7 +40,7 @@ const CATEGORY_DATA: {
   },
   {
     key: 'insumos',
-    slug: 'insumos',
+    slug: 'insumos-agricolas',
     description: 'Fertilizantes, agroquímicos y semillas',
     image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80',
   },
