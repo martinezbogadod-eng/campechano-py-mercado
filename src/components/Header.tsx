@@ -134,7 +134,7 @@ const Header = () => {
             </>
           ) : (
             <>
-              <Button variant="outline" onClick={() => navigate('/auth')} size="sm">
+              <Button variant="outline" onClick={() => navigate('/auth')} size="sm" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                 {t('header.login')}
               </Button>
               <Button onClick={() => navigate('/auth')} size="sm">
