@@ -143,7 +143,6 @@ const MyListings = () => {
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {CATEGORIES[listing.category]?.label} • {listing.city},{' '}
-                      {CATEGORIES[listing.category]?.label} • {listing.city},{' '}
                       {listing.department}
                     </p>
                     <p className="font-semibold text-primary">
