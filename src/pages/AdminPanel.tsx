@@ -179,8 +179,8 @@ export default function AdminPanel() {
 
   const getRoleBadge = (role: string) => {
     const info = ROLE_INFO[role as SelectableRole];
-    if (role === 'admin') return <Badge className="bg-purple-100 text-purple-800">🛡️ Admin</Badge>;
-    if (info) return <Badge className={info.color}>{info.emoji} {info.label}</Badge>;
+    if (role === 'admin') return <Badge className="bg-purple-100 text-purple-800">Admin</Badge>;
+    if (info) return <Badge className={info.color}>{info.label}</Badge>;
     return <Badge variant="secondary">{role}</Badge>;
   };
 
