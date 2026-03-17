@@ -56,10 +56,10 @@ const SearchFilters = ({
             <SelectValue placeholder="Categoría" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">📦 Todas las categorías</SelectItem>
-            {Object.entries(CATEGORIES).map(([key, { label, emoji }]) => (
+            <SelectItem value="all">Todas las categorías</SelectItem>
+            {Object.entries(CATEGORIES).map(([key, { label }]) => (
               <SelectItem key={key} value={key}>
-                {emoji} {label}
+                {label}
               </SelectItem>
             ))}
           </SelectContent>
