@@ -250,7 +250,7 @@ const ListingPage = () => {
                 </Badge>
               )}
               <Badge variant="secondary" className="text-sm">
-                {category.emoji} {category.label}
+                {category.label}
               </Badge>
             </div>
 

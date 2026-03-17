@@ -513,7 +513,7 @@ const Profile = () => {
                 <SelectTrigger><SelectValue placeholder={t('profile.selectNewRole')} /></SelectTrigger>
                 <SelectContent>
                   {SELECTABLE_ROLES.filter(r => r !== currentRole).map(role => (
-                    <SelectItem key={role} value={role}>{ROLE_INFO[role]?.emoji} {t(`role.${role}`)}</SelectItem>
+                    <SelectItem key={role} value={role}>{t(`role.${role}`)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

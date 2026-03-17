@@ -596,7 +596,7 @@ export default function AdminPanel() {
                             <div className="flex items-center gap-2 mb-1">
                               <ShieldCheck className="h-4 w-4 text-primary" />
                               <p className="font-medium">
-                                {capInfo?.emoji} {capInfo?.label || req.capability}
+                                {capInfo?.label || req.capability}
                               </p>
                               <Badge variant={req.status === 'pending' ? 'secondary' : req.status === 'approved' ? 'default' : 'destructive'}>
                                 {req.status === 'pending' ? 'Pendiente' : req.status === 'approved' ? 'Aprobado' : 'Rechazado'}

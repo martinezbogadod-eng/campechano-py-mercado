@@ -1,5 +1,7 @@
 import { Category, CATEGORIES } from '@/types/listing';
 import { cn } from '@/lib/utils';
+import { CategoryIcon } from '@/components/CategoryIcon';
+import { LayoutGrid } from 'lucide-react';
 
 interface CategoryBarProps {
   selectedCategory: Category | 'all';
@@ -18,10 +20,10 @@ const CategoryBar = ({ selectedCategory, onCategoryChange }: CategoryBarProps) =
             : 'bg-background text-muted-foreground border-border hover:bg-action-light hover:text-accent hover:border-accent'
         )}
       >
-        <span>📦</span>
+        <LayoutGrid className="h-4 w-4" />
         <span>Todos</span>
       </button>
-      {Object.entries(CATEGORIES).map(([key, { label, emoji }]) => (
+      {Object.entries(CATEGORIES).map(([key, { label, icon }]) => (
         <button
           key={key}
           onClick={() => onCategoryChange(key as Category)}
@@ -32,7 +34,7 @@ const CategoryBar = ({ selectedCategory, onCategoryChange }: CategoryBarProps) =
               : 'bg-background text-muted-foreground border-border hover:bg-action-light hover:text-accent hover:border-accent'
           )}
         >
-          <span>{emoji}</span>
+          <CategoryIcon name={icon} className="h-4 w-4" />
           <span className="hidden sm:inline">{label}</span>
         </button>
       ))}

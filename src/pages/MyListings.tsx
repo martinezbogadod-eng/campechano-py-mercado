@@ -142,7 +142,7 @@ const MyListings = () => {
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {CATEGORIES[listing.category]?.emoji}{' '}
+                      {CATEGORIES[listing.category]?.label} • {listing.city},{' '}
                       {CATEGORIES[listing.category]?.label} • {listing.city},{' '}
                       {listing.department}
                     </p>

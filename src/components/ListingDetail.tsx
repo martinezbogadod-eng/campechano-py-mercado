@@ -113,10 +113,10 @@ const ListingDetail = ({ listing, open, onClose }: ListingDetailProps) => {
             <DialogHeader className="mb-4 text-left">
               <div className="mb-2 flex flex-wrap gap-2">
                 <Badge className={`gap-1 ${LISTING_TYPE_INFO[listing.listingType].color}`}>
-                  {LISTING_TYPE_INFO[listing.listingType].emoji} {LISTING_TYPE_INFO[listing.listingType].label}
+                  {LISTING_TYPE_INFO[listing.listingType].label}
                 </Badge>
                 <Badge variant="secondary" className="text-sm">
-                  {category.emoji} {category.label}
+                  {category.label}
                 </Badge>
               </div>
               <DialogTitle className="text-2xl font-bold leading-tight text-foreground">

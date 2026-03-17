@@ -74,7 +74,7 @@ const SearchFilters = ({
             <SelectValue placeholder="Departamento" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">📍 Todos los departamentos</SelectItem>
+            <SelectItem value="all">Todos los departamentos</SelectItem>
             {DEPARTMENTS.map((dept) => (
               <SelectItem key={dept} value={dept}>
                 {dept}
