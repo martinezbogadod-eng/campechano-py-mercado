@@ -125,7 +125,7 @@ const MyListings = () => {
                   />
                 ) : (
                   <div className="flex h-24 w-24 items-center justify-center rounded-md bg-muted text-4xl">
-                    {CATEGORIES[listing.category]?.emoji || '📦'}
+                    {CATEGORIES[listing.category]?.label || 'Sin categoría'}
                   </div>
                 )}
 
