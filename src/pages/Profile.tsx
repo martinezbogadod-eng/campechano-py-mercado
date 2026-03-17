@@ -318,7 +318,7 @@ const Profile = () => {
             {currentRole && (
               <div className="flex items-center gap-3 mb-4">
                 <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium ${ROLE_INFO[currentRole]?.color || 'bg-muted text-muted-foreground'}`}>
-                  {ROLE_INFO[currentRole]?.emoji} {t(`role.${currentRole}`)}
+                  {ROLE_INFO[currentRole]?.label} {t(`role.${currentRole}`)}
                 </span>
               </div>
             )}
