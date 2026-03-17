@@ -91,7 +91,6 @@ const HeroCarousel = () => {
         </h1>
         <p className="mt-3 max-w-2xl text-base sm:text-lg text-white/90 drop-shadow">
           Compra y vende productos, insumos y servicios agrícolas.
-          Conectamos al campo paraguayo.
         </p>
       </div>
 
