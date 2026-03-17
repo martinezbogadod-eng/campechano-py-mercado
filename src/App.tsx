@@ -68,7 +68,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<OnboardingGuard><Index /></OnboardingGuard>} />
-      <Route path="/auth" element={<Auth />} />
+      <Route path="/categoria/:slug" element={<OnboardingGuard><CategoryPage /></OnboardingGuard>} />
       <Route path="/onboarding" element={<RoleOnboarding />} />
       <Route path="/publicar" element={<ProtectedRoute><NewListing /></ProtectedRoute>} />
       <Route path="/mis-anuncios" element={<ProtectedRoute><MyListings /></ProtectedRoute>} />
