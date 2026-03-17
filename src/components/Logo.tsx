@@ -13,14 +13,12 @@ const Logo = ({ size = 'md', showText = true, variant = 'light' }: LogoProps) =>
 
   const { circle, icon } = dimensions[size];
   
-  // Color del círculo: usar el verde del logo (#2d7a4f)
-  const circleColor = '#2d7a4f';
+  // Navy blue brand color
+  const circleColor = '#1e3a8a';
   
-  // Colores de texto según variante
-  const textColor = variant === 'dark' ? '#ffffff' : '#1a1a1a';
-  const taglineColor = variant === 'dark' ? '#d1d5db' : '#6b7280';
+  const textColor = variant === 'dark' ? '#ffffff' : '#18181b';
+  const taglineColor = variant === 'dark' ? '#d1d5db' : '#52525b';
 
-  // Tamaños de texto según tamaño del logo
   const textSizes = {
     sm: { name: 16, tagline: 10 },
     md: { name: 18, tagline: 11 },
@@ -31,7 +29,6 @@ const Logo = ({ size = 'md', showText = true, variant = 'light' }: LogoProps) =>
 
   return (
     <div className="flex items-center gap-3">
-      {/* Círculo con hoja */}
       <div 
         className="flex items-center justify-center rounded-full flex-shrink-0"
         style={{ 
@@ -57,14 +54,13 @@ const Logo = ({ size = 'md', showText = true, variant = 'light' }: LogoProps) =>
           />
           <path 
             d="M12 6C10.5 7.5 8 10 8 12C8 14 9 16 10 17" 
-            stroke="#2d7a4f" 
+            stroke="#1e3a8a" 
             strokeWidth="1.5" 
             strokeLinecap="round"
           />
         </svg>
       </div>
 
-      {/* Texto */}
       {showText && (
         <div className="flex flex-col">
           <span 

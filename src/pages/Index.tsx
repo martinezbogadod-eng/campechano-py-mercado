@@ -16,7 +16,6 @@ const Index = () => {
 
   const { data: dbListings, isLoading } = useListings();
 
-  // Convert DB listings to the Listing type expected by components
   const listings: Listing[] = useMemo(() => {
     if (!dbListings) return [];
     return dbListings.map((l) => ({
@@ -51,7 +50,6 @@ const Index = () => {
 
   const filteredListings = useMemo(() => {
     return listings.filter((listing) => {
-      // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const matchesSearch =
@@ -60,27 +58,13 @@ const Index = () => {
           listing.city.toLowerCase().includes(query);
         if (!matchesSearch) return false;
       }
-
-      // Category filter
-      if (selectedCategory !== 'all' && listing.category !== selectedCategory) {
-        return false;
-      }
-
-      // Department filter
-      if (selectedDepartment !== 'all' && listing.department !== selectedDepartment) {
-        return false;
-      }
-
-      // Featured filter
-      if (showFeaturedOnly && !listing.featured) {
-        return false;
-      }
-
+      if (selectedCategory !== 'all' && listing.category !== selectedCategory) return false;
+      if (selectedDepartment !== 'all' && listing.department !== selectedDepartment) return false;
+      if (showFeaturedOnly && !listing.featured) return false;
       return true;
     });
   }, [listings, searchQuery, selectedCategory, selectedDepartment, showFeaturedOnly]);
 
-  // Sort: featured first, then by date
   const sortedListings = useMemo(() => {
     return [...filteredListings].sort((a, b) => {
       if (a.featured && !b.featured) return -1;
@@ -95,15 +79,15 @@ const Index = () => {
 
       <main className="container py-6">
         {/* Hero section */}
-        <div className="relative mb-8 overflow-hidden rounded-2xl">
+        <div className="relative mb-8 overflow-hidden rounded-xl">
           <img
             src={heroBg}
             alt="Categorías agrícolas del Paraguay"
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-foreground/60" />
+          <div className="absolute inset-0 bg-primary/40" />
           <div className="relative px-6 py-12 text-center sm:py-16">
-            <h1 className="text-3xl font-extrabold text-white sm:text-4xl drop-shadow-lg">
+            <h1 className="text-3xl font-bold text-white sm:text-4xl drop-shadow-lg">
               Mercado Agrícola Digital de Paraguay
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-lg text-white/90 drop-shadow">
@@ -167,7 +151,7 @@ const Index = () => {
           <p className="text-xs text-muted-foreground">
             © 2026 KAMPS PY — KAMPS PY es una plataforma de interconexión. Las transacciones son responsabilidad exclusiva de los usuarios.
           </p>
-          <Link to="/terminos" className="text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors mt-1 inline-block">
+          <Link to="/terminos" className="text-xs font-medium text-primary hover:text-primary-hover hover:underline transition-colors mt-1 inline-block">
             Términos y Condiciones
           </Link>
         </div>

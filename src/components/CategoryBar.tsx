@@ -8,14 +8,14 @@ interface CategoryBarProps {
 
 const CategoryBar = ({ selectedCategory, onCategoryChange }: CategoryBarProps) => {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
       <button
         onClick={() => onCategoryChange('all')}
         className={cn(
-          'flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all',
+          'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all border',
           selectedCategory === 'all'
-            ? 'bg-primary text-primary-foreground shadow-md'
-            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+            ? 'bg-accent text-accent-foreground border-accent shadow-md'
+            : 'bg-background text-muted-foreground border-border hover:bg-action-light hover:text-accent hover:border-accent'
         )}
       >
         <span>📦</span>
@@ -26,10 +26,10 @@ const CategoryBar = ({ selectedCategory, onCategoryChange }: CategoryBarProps) =
           key={key}
           onClick={() => onCategoryChange(key as Category)}
           className={cn(
-            'flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all',
+            'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all border',
             selectedCategory === key
-              ? 'bg-primary text-primary-foreground shadow-md'
-              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              ? 'bg-accent text-accent-foreground border-accent shadow-md'
+              : 'bg-background text-muted-foreground border-border hover:bg-action-light hover:text-accent hover:border-accent'
           )}
         >
           <span>{emoji}</span>
