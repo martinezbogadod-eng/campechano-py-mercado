@@ -2,48 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
-
-/* Campechano Py Local - Agricultural Marketplace Design System */
+/* Kamps Py - Navy + Verde Lima Design System */
 
 @layer base {
   :root {
-    /* Soft, earthy agricultural palette */
-    --background: 40 30% 97%;
-    --foreground: 25 20% 15%;
+    /* Navy + Lima corporate palette */
+    --background: 0 0% 100%;
+    --foreground: 240 6% 10%;
 
-    --card: 40 40% 99%;
-    --card-foreground: 25 20% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 6% 10%;
 
-    --popover: 40 40% 99%;
-    --popover-foreground: 25 20% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 6% 10%;
 
-    /* Primary: Fresh agricultural green */
-    --primary: 142 45% 38%;
-    --primary-foreground: 40 40% 98%;
+    /* Primary: Navy Blue */
+    --primary: 224 64% 33%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Warm wheat/sand */
-    --secondary: 38 50% 92%;
-    --secondary-foreground: 25 30% 25%;
+    /* Secondary: Warm cream */
+    --secondary: 55 92% 95%;
+    --secondary-foreground: 240 6% 10%;
 
-    /* Muted: Soft sage */
-    --muted: 100 20% 92%;
-    --muted-foreground: 100 10% 45%;
+    /* Muted: Zinc tones */
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 5% 34%;
 
-    /* Accent: Warm amber/orange for highlights */
-    --accent: 32 85% 55%;
-    --accent-foreground: 40 40% 98%;
+    /* Accent: Verde Lima */
+    --accent: 85 85% 35%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 40 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 40 30% 88%;
-    --input: 40 30% 88%;
-    --ring: 142 45% 38%;
+    --border: 240 6% 90%;
+    --input: 240 5% 84%;
+    --ring: 224 64% 33%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom colors for categories */
+    /* Action (verde lima aliases) */
+    --action: 85 85% 35%;
+    --action-hover: 85 78% 27%;
+    --action-light: 79 89% 95%;
+
+    /* Primary variants */
+    --primary-hover: 224 71% 40%;
+    --primary-light: 214 95% 93%;
+
+    /* Category colors */
     --granos: 45 80% 50%;
     --frutas: 142 50% 45%;
     --ganaderia: 25 60% 45%;
@@ -53,59 +60,70 @@
 
     /* Featured badge */
     --featured: 32 90% 50%;
-    --featured-foreground: 40 40% 98%;
+    --featured-foreground: 0 0% 100%;
 
     /* WhatsApp green */
     --whatsapp: 142 70% 40%;
     --whatsapp-foreground: 0 0% 100%;
 
-    --sidebar-background: 40 30% 97%;
-    --sidebar-foreground: 25 20% 15%;
-    --sidebar-primary: 142 45% 38%;
-    --sidebar-primary-foreground: 40 40% 98%;
-    --sidebar-accent: 38 50% 92%;
-    --sidebar-accent-foreground: 25 30% 25%;
-    --sidebar-border: 40 30% 88%;
-    --sidebar-ring: 142 45% 38%;
+    /* Warning / Info */
+    --warning: 21 90% 48%;
+    --info: 224 71% 40%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 6% 10%;
+    --sidebar-primary: 224 64% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 55 92% 95%;
+    --sidebar-accent-foreground: 240 6% 10%;
+    --sidebar-border: 240 6% 90%;
+    --sidebar-ring: 224 64% 33%;
   }
 
   .dark {
-    --background: 25 20% 10%;
-    --foreground: 40 30% 95%;
+    --background: 224 33% 10%;
+    --foreground: 0 0% 95%;
 
-    --card: 25 20% 12%;
-    --card-foreground: 40 30% 95%;
+    --card: 224 33% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 25 20% 12%;
-    --popover-foreground: 40 30% 95%;
+    --popover: 224 33% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 142 45% 45%;
-    --primary-foreground: 25 20% 10%;
+    --primary: 224 64% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 38 30% 20%;
-    --secondary-foreground: 40 30% 95%;
+    --secondary: 55 30% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 25 15% 20%;
-    --muted-foreground: 40 20% 65%;
+    --muted: 224 15% 20%;
+    --muted-foreground: 240 5% 65%;
 
-    --accent: 32 85% 55%;
-    --accent-foreground: 25 20% 10%;
+    --accent: 85 70% 40%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 60% 45%;
-    --destructive-foreground: 40 30% 95%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 25 15% 20%;
-    --input: 25 15% 20%;
-    --ring: 142 45% 45%;
+    --border: 224 15% 20%;
+    --input: 224 15% 20%;
+    --ring: 224 64% 45%;
 
-    --sidebar-background: 25 20% 10%;
-    --sidebar-foreground: 40 30% 95%;
-    --sidebar-primary: 142 45% 45%;
-    --sidebar-primary-foreground: 25 20% 10%;
-    --sidebar-accent: 38 30% 20%;
-    --sidebar-accent-foreground: 40 30% 95%;
-    --sidebar-border: 25 15% 20%;
-    --sidebar-ring: 142 45% 45%;
+    --action: 85 70% 40%;
+    --action-hover: 85 60% 32%;
+    --action-light: 85 30% 18%;
+
+    --primary-hover: 224 64% 50%;
+    --primary-light: 224 40% 20%;
+
+    --sidebar-background: 224 33% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 224 64% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 55 30% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 224 15% 20%;
+    --sidebar-ring: 224 64% 45%;
   }
 }
 
@@ -115,8 +133,40 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Nunito', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.2;
+    @apply text-foreground;
+  }
+
+  h1 { font-size: 42px; font-weight: 700; }
+  h2 { font-size: 32px; font-weight: 700; }
+  h3 { font-size: 24px; font-weight: 600; }
+  h4 { font-size: 20px; font-weight: 600; }
+  h5 { font-size: 18px; font-weight: 600; }
+  h6 { font-size: 16px; font-weight: 600; }
+
+  p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  small, .text-small {
+    font-size: 13px;
+  }
+
+  label, button {
+    font-weight: 500;
+  }
+
+  a {
+    font-weight: 500;
   }
 }
 
@@ -131,6 +181,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Responsive typography */
+@media (max-width: 768px) {
+  h1 { font-size: 32px; }
+  h2 { font-size: 24px; }
+  h3 { font-size: 20px; }
+  body { font-size: 14px; }
+  p { font-size: 14px; }
+}
+
 /* Card hover animation */
 @layer components {
   .card-hover {
@@ -138,7 +197,7 @@ html {
   }
   .card-hover:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px -8px hsl(var(--foreground) / 0.12);
+    box-shadow: 0 8px 24px hsl(var(--primary) / 0.12);
   }
 
   .btn-hover {

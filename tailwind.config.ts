@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Nunito', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -25,6 +25,8 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+          light: "hsl(var(--primary-light))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -41,6 +43,13 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          hover: "hsl(var(--action-hover))",
+          light: "hsl(var(--action-light))",
+        },
+        action: {
+          DEFAULT: "hsl(var(--action))",
+          hover: "hsl(var(--action-hover))",
+          light: "hsl(var(--action-light))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

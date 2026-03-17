@@ -33,7 +33,7 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
 
   return (
     <Card
-      className="group cursor-pointer overflow-hidden card-hover animate-fade-in"
+      className="group cursor-pointer overflow-hidden card-hover animate-fade-in border-border hover:border-primary"
       onClick={onClick}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -45,7 +45,6 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute left-2 top-2 flex flex-col gap-1">
-          {/* Listing Type Badge */}
           <Badge className={`gap-1 ${typeInfo.color}`}>
             {typeInfo.emoji} {typeInfo.label}
           </Badge>
@@ -56,7 +55,7 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
             </Badge>
           )}
           {listing.isWholesale && (
-            <Badge className="gap-1 bg-emerald-600 text-white">
+            <Badge className="gap-1 bg-accent text-accent-foreground">
               <Package className="h-3 w-3" />
               {t('listing.wholesale')}
             </Badge>
