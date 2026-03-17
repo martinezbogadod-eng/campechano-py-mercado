@@ -5,6 +5,7 @@ import ListingGrid from '@/components/ListingGrid';
 import { useListings } from '@/hooks/useListings';
 import { Category, Listing, CATEGORIES, PriceUnit } from '@/types/listing';
 import { Search, Star, ChevronRight, Package } from 'lucide-react';
+import { CategoryIcon } from '@/components/CategoryIcon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
