@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/hooks/useLanguage";
 import { useNeedsOnboarding } from "@/hooks/useUserRoles";
 import { useAuth } from "@/hooks/useAuth";
 import Index from "./pages/Index";
+import CategoryPage from "./pages/CategoryPage";
 import Auth from "./pages/Auth";
 import NewListing from "./pages/NewListing";
 import MyListings from "./pages/MyListings";
@@ -67,6 +68,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<OnboardingGuard><Index /></OnboardingGuard>} />
+      <Route path="/categoria/:slug" element={<OnboardingGuard><CategoryPage /></OnboardingGuard>} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/onboarding" element={<RoleOnboarding />} />
       <Route path="/publicar" element={<ProtectedRoute><NewListing /></ProtectedRoute>} />

@@ -1,134 +1,178 @@
-import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
-import SearchFilters from '@/components/SearchFilters';
-import CategoryBar from '@/components/CategoryBar';
-import ListingGrid from '@/components/ListingGrid';
 import HeroCarousel from '@/components/HeroCarousel';
-import { useListings, DbListing } from '@/hooks/useListings';
-import { Category, Listing, CATEGORIES, PriceUnit } from '@/types/listing';
+import { useListings } from '@/hooks/useListings';
+import { Category, CATEGORIES } from '@/types/listing';
+import { Search, MessageSquare, ShieldCheck, ArrowRight } from 'lucide-react';
+
+const CATEGORY_DATA: {
+  key: Category;
+  slug: string;
+  description: string;
+  image: string;
+}[] = [
+  {
+    key: 'granos',
+    slug: 'granos',
+    description: 'Soja, maíz, trigo, girasol y más',
+    image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80',
+  },
+  {
+    key: 'frutas-verduras',
+    slug: 'frutas-verduras',
+    description: 'Productos frescos del campo paraguayo',
+    image: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&q=80',
+  },
+  {
+    key: 'ganaderia',
+    slug: 'ganaderia',
+    description: 'Ganado vacuno, porcino, avícola y más',
+    image: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=600&q=80',
+  },
+  {
+    key: 'maquinaria',
+    slug: 'maquinaria',
+    description: 'Tractores, implementos y equipos agrícolas',
+    image: 'https://images.unsplash.com/photo-1530267981375-f0de937f5f13?w=600&q=80',
+  },
+  {
+    key: 'insumos',
+    slug: 'insumos',
+    description: 'Fertilizantes, agroquímicos y semillas',
+    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80',
+  },
+  {
+    key: 'servicios',
+    slug: 'servicios',
+    description: 'Pulverización, siembra, cosecha y asesoría',
+    image: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600&q=80',
+  },
+  {
+    key: 'forestal',
+    slug: 'forestal',
+    description: 'Madera, plantines y productos forestales',
+    image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=600&q=80',
+  },
+  {
+    key: 'viveros',
+    slug: 'viveros',
+    description: 'Plantas ornamentales, frutales y forestales',
+    image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600&q=80',
+  },
+];
+
+const STEPS = [
+  {
+    icon: Search,
+    title: 'Explorá',
+    description: 'Navegá por categorías y encontrá lo que necesitás para tu campo.',
+  },
+  {
+    icon: MessageSquare,
+    title: 'Conectá',
+    description: 'Contactá directamente al vendedor por chat o WhatsApp.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Transaccioná',
+    description: 'Acordá las condiciones y cerrá el trato de forma segura.',
+  },
+];
 
 const Index = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
-  const [selectedDepartment, setSelectedDepartment] = useState('all');
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
+  const { data: dbListings } = useListings();
 
-  const { data: dbListings, isLoading } = useListings();
-
-  const listings: Listing[] = useMemo(() => {
-    if (!dbListings) return [];
-    return dbListings.map((l) => ({
-      id: l.id,
-      title: l.title,
-      description: l.description,
-      price: l.price,
-      priceUnit: l.price_unit as PriceUnit | null,
-      currency: l.currency as 'PYG' | 'USD',
-      category: l.category,
-      department: l.department,
-      city: l.city,
-      phone: l.phone_whatsapp,
-      imageUrl: l.images?.[0] || `https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800&q=80`,
-      images: l.images || [],
-      featured: l.featured,
-      featuredUntil: l.featured_until,
-      createdAt: l.created_at,
-      userId: l.user_id,
-      lat: l.lat ?? undefined,
-      lon: l.lon ?? undefined,
-      allowWhatsappContact: l.allow_whatsapp_contact ?? true,
-      showWhatsappPublic: l.show_whatsapp_public ?? false,
-      isWholesale: l.is_wholesale ?? false,
-      minVolume: l.min_volume ?? null,
-      productionCapacity: l.production_capacity ?? null,
-      listingType: l.listing_type || 'oferta',
-      quantity: l.quantity ?? null,
-      quantityUnit: l.quantity_unit ?? null,
-    }));
-  }, [dbListings]);
-
-  const filteredListings = useMemo(() => {
-    return listings.filter((listing) => {
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        const matchesSearch =
-          listing.title.toLowerCase().includes(query) ||
-          listing.description.toLowerCase().includes(query) ||
-          listing.city.toLowerCase().includes(query);
-        if (!matchesSearch) return false;
-      }
-      if (selectedCategory !== 'all' && listing.category !== selectedCategory) return false;
-      if (selectedDepartment !== 'all' && listing.department !== selectedDepartment) return false;
-      if (showFeaturedOnly && !listing.featured) return false;
-      return true;
-    });
-  }, [listings, searchQuery, selectedCategory, selectedDepartment, showFeaturedOnly]);
-
-  const sortedListings = useMemo(() => {
-    return [...filteredListings].sort((a, b) => {
-      if (a.featured && !b.featured) return -1;
-      if (!a.featured && b.featured) return 1;
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-  }, [filteredListings]);
+  // Count listings per category
+  const countByCategory = (cat: Category) =>
+    dbListings?.filter((l) => l.category === cat).length ?? 0;
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container py-6">
+      <main>
         {/* Hero carousel */}
-        <div className="mb-8">
+        <div className="container py-6">
           <HeroCarousel />
         </div>
 
-        {/* Category quick filters */}
-        <div className="mb-6">
-          <CategoryBar
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-          />
-        </div>
-
-        {/* Search and filters */}
-        <div className="mb-8">
-          <SearchFilters
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            selectedDepartment={selectedDepartment}
-            onDepartmentChange={setSelectedDepartment}
-            showFeaturedOnly={showFeaturedOnly}
-            onFeaturedToggle={() => setShowFeaturedOnly(!showFeaturedOnly)}
-          />
-        </div>
-
-        {/* Results count */}
-        <div className="mb-4">
-          <p className="text-sm text-muted-foreground">
-            {isLoading ? 'Cargando...' : `${sortedListings.length} anuncio${sortedListings.length !== 1 ? 's' : ''} encontrado${sortedListings.length !== 1 ? 's' : ''}`}
-          </p>
-        </div>
-
-        {/* Loading state */}
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          </div>
-        ) : sortedListings.length === 0 ? (
-          <div className="rounded-lg border bg-card p-12 text-center">
-            <p className="text-lg text-muted-foreground">
-              No hay anuncios disponibles
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              ¡Sé el primero en publicar!
+        {/* Categories grid */}
+        <section className="container py-12">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-3">
+              Explorá nuestras categorías
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+              Encontrá productos, insumos y servicios para el sector agrícola paraguayo
             </p>
           </div>
-        ) : (
-          <ListingGrid listings={sortedListings} />
-        )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {CATEGORY_DATA.map((cat) => {
+              const info = CATEGORIES[cat.key];
+              const count = countByCategory(cat.key);
+
+              return (
+                <Link
+                  key={cat.key}
+                  to={`/categoria/${cat.slug}`}
+                  className="group overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_12px_24px_hsl(var(--primary)/0.15)] hover:border-primary"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={cat.image}
+                      alt={info.label}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                    <span className="absolute top-3 left-3 text-2xl">{info.emoji}</span>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+                      {info.label}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                      {cat.description}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="inline-block rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+                        {count} anuncio{count !== 1 ? 's' : ''}
+                      </span>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Cómo funciona */}
+        <section className="border-t bg-muted/30 py-16">
+          <div className="container">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-primary mb-3">
+                ¿Cómo funciona?
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Tres pasos simples para conectar con el campo
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              {STEPS.map((step, i) => (
+                <div key={i} className="text-center">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                    <step.icon className="h-7 w-7" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
@@ -137,7 +181,7 @@ const Index = () => {
           <p className="text-xs text-muted-foreground">
             © 2026 KAMPS PY — KAMPS PY es una plataforma de interconexión. Las transacciones son responsabilidad exclusiva de los usuarios.
           </p>
-          <Link to="/terminos" className="text-xs font-medium text-primary hover:text-primary-hover hover:underline transition-colors mt-1 inline-block">
+          <Link to="/terminos" className="text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors mt-1 inline-block">
             Términos y Condiciones
           </Link>
         </div>
