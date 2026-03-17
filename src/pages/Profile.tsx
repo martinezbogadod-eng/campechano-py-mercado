@@ -301,7 +301,7 @@ const Profile = () => {
                       onClick={() => handleRequestCapability(cap)}
                       disabled={requestCapability.isPending}
                     >
-                      {info.emoji} {info.label}
+                      {info.label}
                     </Button>
                   );
                 })}
