@@ -244,7 +244,7 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
                   listingType === key ? info.color : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >
-                {info.emoji} {info.label}
+                {info.label}
               </Badge>
             </button>
           ))}
@@ -279,9 +279,9 @@ export default function ListingForm({ listing, onSuccess, onCancel }: ListingFor
             <SelectValue placeholder="Selecciona categoría" />
           </SelectTrigger>
           <SelectContent>
-            {allowedCategories.map(([key, { label, emoji }]) => (
+            {allowedCategories.map(([key, { label, icon }]) => (
               <SelectItem key={key} value={key}>
-                {emoji} {label}
+                {label}
               </SelectItem>
             ))}
           </SelectContent>

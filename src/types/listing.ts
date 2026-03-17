@@ -17,10 +17,10 @@ export const PRICE_UNITS: PriceUnit[] = ['Kg', 'Litros', 'Unidad', 'Docena', 'Bo
 export const QUANTITY_UNITS = ['Kg', 'Litros', 'Unidad', 'Docena', 'Bolsa', 'Tonelada', 'Hectárea', 'Metro', 'Caja'] as const;
 export type QuantityUnit = typeof QUANTITY_UNITS[number];
 
-export const LISTING_TYPE_INFO: Record<ListingType, { label: string; emoji: string; color: string; bgClass: string }> = {
-  oferta: { label: 'Oferta', emoji: '📦', color: 'bg-emerald-600 text-white', bgClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' },
-  demanda: { label: 'Demanda', emoji: '🔍', color: 'bg-blue-600 text-white', bgClass: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' },
-  servicio: { label: 'Servicio', emoji: '🔧', color: 'bg-orange-500 text-white', bgClass: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300' },
+export const LISTING_TYPE_INFO: Record<ListingType, { label: string; icon: string; color: string; bgClass: string }> = {
+  oferta: { label: 'Oferta', icon: 'package', color: 'bg-emerald-600 text-white', bgClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' },
+  demanda: { label: 'Demanda', icon: 'search', color: 'bg-blue-600 text-white', bgClass: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' },
+  servicio: { label: 'Servicio', icon: 'wrench', color: 'bg-orange-500 text-white', bgClass: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300' },
 };
 
 export interface Listing {
@@ -54,15 +54,15 @@ export interface Listing {
   quantityUnit: string | null;
 }
 
-export const CATEGORIES: Record<Category, { label: string; emoji: string }> = {
-  'granos': { label: 'Granos y Cereales', emoji: '🌾' },
-  'frutas-verduras': { label: 'Frutas y Verduras', emoji: '🥬' },
-  'ganaderia': { label: 'Ganadería', emoji: '🐄' },
-  'maquinaria': { label: 'Maquinaria', emoji: '🚜' },
-  'insumos': { label: 'Insumos Agrícolas', emoji: '🌱' },
-  'servicios': { label: 'Servicios', emoji: '🔧' },
-  'forestal': { label: 'Forestal', emoji: '🌳' },
-  'viveros': { label: 'Viveros', emoji: '🌿' },
+export const CATEGORIES: Record<Category, { label: string; icon: string }> = {
+  'granos': { label: 'Granos y Cereales', icon: 'wheat' },
+  'frutas-verduras': { label: 'Frutas y Verduras', icon: 'apple' },
+  'ganaderia': { label: 'Ganadería', icon: 'beef' },
+  'maquinaria': { label: 'Maquinaria', icon: 'tractor' },
+  'insumos': { label: 'Insumos Agrícolas', icon: 'sprout' },
+  'servicios': { label: 'Servicios', icon: 'wrench' },
+  'forestal': { label: 'Forestal', icon: 'tree-pine' },
+  'viveros': { label: 'Viveros', icon: 'flower-2' },
 };
 
 export const DEPARTMENTS = [

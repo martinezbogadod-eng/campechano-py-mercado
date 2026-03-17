@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Listing, CATEGORIES, LISTING_TYPE_INFO } from '@/types/listing';
 import { getOptimizedImageUrl } from '@/lib/imageUtils';
 import { useLanguage } from '@/hooks/useLanguage';
+import { CategoryIcon } from '@/components/CategoryIcon';
 
 interface ListingCardProps {
   listing: Listing;
@@ -46,7 +47,7 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
         />
         <div className="absolute left-2 top-2 flex flex-col gap-1">
           <Badge className={`gap-1 ${typeInfo.color}`}>
-            {typeInfo.emoji} {typeInfo.label}
+            <CategoryIcon name={typeInfo.icon} className="h-3 w-3" /> {typeInfo.label}
           </Badge>
           {listing.featured && (
             <Badge className="gap-1 bg-featured text-featured-foreground">
@@ -62,8 +63,8 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
           )}
         </div>
         <div className="absolute right-2 top-2">
-          <Badge variant="secondary" className="text-sm">
-            {category.emoji} {category.label}
+          <Badge variant="secondary" className="text-sm gap-1">
+            <CategoryIcon name={category.icon} className="h-3 w-3" /> {category.label}
           </Badge>
         </div>
       </div>

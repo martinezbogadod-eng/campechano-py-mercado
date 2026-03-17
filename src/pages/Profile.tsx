@@ -260,7 +260,7 @@ const Profile = () => {
                   const info = CAPABILITY_INFO[cap.capability as Capability];
                   return info ? (
                     <Badge key={cap.id} className="bg-primary/10 text-primary border border-primary/20 px-3 py-1">
-                      {info.emoji} {info.label}
+                      {info.label}
                     </Badge>
                   ) : null;
                 })}
@@ -277,7 +277,7 @@ const Profile = () => {
                     const info = CAPABILITY_INFO[cap.capability as Capability];
                     return info ? (
                       <Badge key={cap.id} variant="outline" className="text-xs">
-                        {info.emoji} {info.label}
+                        {info.label}
                       </Badge>
                     ) : null;
                   })}
@@ -301,7 +301,7 @@ const Profile = () => {
                       onClick={() => handleRequestCapability(cap)}
                       disabled={requestCapability.isPending}
                     >
-                      {info.emoji} {info.label}
+                      {info.label}
                     </Button>
                   );
                 })}
@@ -318,7 +318,7 @@ const Profile = () => {
             {currentRole && (
               <div className="flex items-center gap-3 mb-4">
                 <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium ${ROLE_INFO[currentRole]?.color || 'bg-muted text-muted-foreground'}`}>
-                  {ROLE_INFO[currentRole]?.emoji} {t(`role.${currentRole}`)}
+                  {ROLE_INFO[currentRole]?.label} {t(`role.${currentRole}`)}
                 </span>
               </div>
             )}
@@ -513,7 +513,7 @@ const Profile = () => {
                 <SelectTrigger><SelectValue placeholder={t('profile.selectNewRole')} /></SelectTrigger>
                 <SelectContent>
                   {SELECTABLE_ROLES.filter(r => r !== currentRole).map(role => (
-                    <SelectItem key={role} value={role}>{ROLE_INFO[role]?.emoji} {t(`role.${role}`)}</SelectItem>
+                    <SelectItem key={role} value={role}>{t(`role.${role}`)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

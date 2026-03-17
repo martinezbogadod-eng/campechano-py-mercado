@@ -7,11 +7,11 @@ export type AppRole = 'consumidor' | 'productor' | 'productor_minorista' | 'prod
 // Non-admin roles that users can select during onboarding
 export type SelectableRole = Exclude<AppRole, 'admin' | 'productor'>;
 
-export const ROLE_INFO: Record<SelectableRole, { emoji: string; color: string; label: string }> = {
-  consumidor: { emoji: '🛒', color: 'bg-blue-100 text-blue-800', label: 'Consumidor' },
-  productor_minorista: { emoji: '🌱', color: 'bg-green-100 text-green-800', label: 'Productor Minorista' },
-  productor_mayorista: { emoji: '🌾', color: 'bg-emerald-100 text-emerald-800', label: 'Productor Mayorista' },
-  prestador: { emoji: '🔧', color: 'bg-orange-100 text-orange-800', label: 'Prestador de Servicios' },
+export const ROLE_INFO: Record<SelectableRole, { icon: string; color: string; label: string }> = {
+  consumidor: { icon: 'shopping-cart', color: 'bg-blue-100 text-blue-800', label: 'Consumidor' },
+  productor_minorista: { icon: 'sprout', color: 'bg-green-100 text-green-800', label: 'Productor Minorista' },
+  productor_mayorista: { icon: 'wheat', color: 'bg-emerald-100 text-emerald-800', label: 'Productor Mayorista' },
+  prestador: { icon: 'wrench', color: 'bg-orange-100 text-orange-800', label: 'Prestador de Servicios' },
 };
 
 // Helper to check if user has any producer role

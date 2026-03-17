@@ -5,6 +5,7 @@ import ListingGrid from '@/components/ListingGrid';
 import { useListings } from '@/hooks/useListings';
 import { Category, Listing, CATEGORIES, PriceUnit } from '@/types/listing';
 import { Search, Star, ChevronRight, Package } from 'lucide-react';
+import { CategoryIcon } from '@/components/CategoryIcon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -250,7 +251,7 @@ const CategoryPage = () => {
         />
         <div className="absolute inset-0 bg-primary/50" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          <span className="text-4xl mb-2">{categoryInfo.emoji}</span>
+          <CategoryIcon name={categoryInfo.icon} className="h-8 w-8 text-white mb-2" />
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
             {categoryInfo.label}
           </h1>
