@@ -260,7 +260,7 @@ const Profile = () => {
                   const info = CAPABILITY_INFO[cap.capability as Capability];
                   return info ? (
                     <Badge key={cap.id} className="bg-primary/10 text-primary border border-primary/20 px-3 py-1">
-                      {info.emoji} {info.label}
+                      {info.label}
                     </Badge>
                   ) : null;
                 })}
