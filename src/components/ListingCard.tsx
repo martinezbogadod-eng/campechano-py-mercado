@@ -47,7 +47,7 @@ const ListingCard = ({ listing, onClick }: ListingCardProps) => {
         />
         <div className="absolute left-2 top-2 flex flex-col gap-1">
           <Badge className={`gap-1 ${typeInfo.color}`}>
-            {typeInfo.emoji} {typeInfo.label}
+            <CategoryIcon name={typeInfo.icon} className="h-3 w-3" /> {typeInfo.label}
           </Badge>
           {listing.featured && (
             <Badge className="gap-1 bg-featured text-featured-foreground">
