@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import ToolCard from '@/components/herramientas/ToolCard';
 import LivePricesWidget from '@/components/herramientas/LivePricesWidget';
@@ -24,7 +25,15 @@ import imgDensidadSiembra from '@/assets/tools/densidad-siembra.jpg';
 import imgRiegoAspersion from '@/assets/tools/riego-aspersion.jpg';
 import imgMargen from '@/assets/tools/margen.jpg';
 import imgSilo from '@/assets/tools/silo.jpg';
-import heroBg from '@/assets/herramientas-hero-bg.jpg';
+
+import heroSoja from '@/assets/hero-tools/soja.jpg';
+import heroMaiz from '@/assets/hero-tools/maiz.jpg';
+import heroSorgo from '@/assets/hero-tools/sorgo.jpg';
+import heroGirasol from '@/assets/hero-tools/girasol.jpg';
+import heroEucaliptos from '@/assets/hero-tools/eucaliptos.jpg';
+import heroNelore from '@/assets/hero-tools/nelore.jpg';
+
+const HERO_IMAGES = [heroSoja, heroMaiz, heroSorgo, heroGirasol, heroEucaliptos, heroNelore];
 
 const TOOLS = [
   { image: imgSuperficie, title: 'Medidas de Superficie', desc: 'Hectáreas, acres, alqueires, cuadras', component: SuperficieCalc },
@@ -40,13 +49,30 @@ const TOOLS = [
 ];
 
 const Herramientas = () => {
+  const [currentBg, setCurrentBg] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero */}
+      {/* Hero with dynamic background */}
       <div className="relative h-[300px] sm:h-[400px] overflow-hidden">
-        <img src={heroBg} alt="Cultivos agrícolas" className="absolute inset-0 w-full h-full object-cover" />
+        {HERO_IMAGES.map((img, i) => (
+          <img
+            key={i}
+            src={img}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+            style={{ opacity: i === currentBg ? 1 : 0 }}
+          />
+        ))}
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <Wrench className="h-10 w-10 text-white mb-3" />
