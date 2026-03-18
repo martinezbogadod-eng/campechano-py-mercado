@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle } from 'lucide-react';
+import { Plus, User, LogOut, FileText, MessageCircle, Shield, UserCircle, Wrench } from 'lucide-react';
 
 const Header = () => {
   const { user, signOut } = useAuth();
