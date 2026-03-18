@@ -20,6 +20,7 @@ import RoleOnboarding from "./pages/RoleOnboarding";
 import Terms from "./pages/Terms";
 import PublicProfile from "./pages/PublicProfile";
 import ResetPassword from "./pages/ResetPassword";
+import Herramientas from "./pages/Herramientas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
