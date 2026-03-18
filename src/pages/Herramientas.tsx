@@ -14,6 +14,7 @@ import MargenCalc from '@/components/herramientas/calculators/MargenCalc';
 import SiloCalc from '@/components/herramientas/calculators/SiloCalc';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Wrench } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 import imgSuperficie from '@/assets/tools/superficie.jpg';
 import imgRendimiento from '@/assets/tools/rendimiento.jpg';
@@ -36,20 +37,21 @@ import heroNelore from '@/assets/hero-tools/nelore.jpg';
 const HERO_IMAGES = [heroSoja, heroMaiz, heroSorgo, heroGirasol, heroEucaliptos, heroNelore];
 
 const TOOLS = [
-  { image: imgSuperficie, title: 'Medidas de Superficie', desc: 'Hectáreas, acres, alqueires, cuadras', component: SuperficieCalc },
-  { image: imgRendimiento, title: 'Rendimiento de Cultivo', desc: 'kg/ha, Tn/Alqueire, sacos, bushels', component: RendimientoCalc },
-  { image: imgPesoVolumen, title: 'Peso y Volumen', desc: 'Bushel, kg, sacos, quintales, arrobas', component: PesoVolumenCalc },
-  { image: imgRiegoGoteo, title: 'Riego por Goteo', desc: 'Diseño de sistema, emisores, caudal', component: RiegoGoteoCalc },
-  { image: imgPulverizacion, title: 'Caldo de Pulverización', desc: 'Mezcla, dosis, calibración', component: PulverizacionCalc },
-  { image: imgFertilizacion, title: 'Fertilización NPK', desc: 'Cálculo de mezclas DAP, Urea, KCl', component: FertilizacionCalc },
-  { image: imgDensidadSiembra, title: 'Densidad de Siembra', desc: 'Semillas/ha, kg semilla, plantas/m²', component: DensidadSiembraCalc },
-  { image: imgRiegoAspersion, title: 'Riego por Aspersión', desc: 'Aspersores, caudal, cobertura', component: RiegoAspersionCalc },
-  { image: imgMargen, title: 'Calculadora de Margen', desc: 'Costos, ingresos, ganancia neta', component: MargenCalc },
-  { image: imgSilo, title: 'Capacidad de Silo', desc: 'Volumen, toneladas, sacos', component: SiloCalc },
+  { image: imgSuperficie, titleKey: 'tools.superficie', descKey: 'tools.superficieDesc', component: SuperficieCalc },
+  { image: imgRendimiento, titleKey: 'tools.rendimiento', descKey: 'tools.rendimientoDesc', component: RendimientoCalc },
+  { image: imgPesoVolumen, titleKey: 'tools.pesoVolumen', descKey: 'tools.pesoVolumenDesc', component: PesoVolumenCalc },
+  { image: imgRiegoGoteo, titleKey: 'tools.riegoGoteo', descKey: 'tools.riegoGoteoDesc', component: RiegoGoteoCalc },
+  { image: imgPulverizacion, titleKey: 'tools.pulverizacion', descKey: 'tools.pulverizacionDesc', component: PulverizacionCalc },
+  { image: imgFertilizacion, titleKey: 'tools.fertilizacion', descKey: 'tools.fertilizacionDesc', component: FertilizacionCalc },
+  { image: imgDensidadSiembra, titleKey: 'tools.densidadSiembra', descKey: 'tools.densidadSiembraDesc', component: DensidadSiembraCalc },
+  { image: imgRiegoAspersion, titleKey: 'tools.riegoAspersion', descKey: 'tools.riegoAspersionDesc', component: RiegoAspersionCalc },
+  { image: imgMargen, titleKey: 'tools.margen', descKey: 'tools.margenDesc', component: MargenCalc },
+  { image: imgSilo, titleKey: 'tools.silo', descKey: 'tools.siloDesc', component: SiloCalc },
 ];
 
 const Herramientas = () => {
   const [currentBg, setCurrentBg] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,10 +79,10 @@ const Herramientas = () => {
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <Wrench className="h-10 w-10 text-white mb-3" />
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-            Herramientas Agrícolas
+            {t('tools.heroTitle')}
           </h1>
           <p className="mt-2 max-w-2xl text-sm sm:text-base text-white/90 drop-shadow">
-            Calculadoras y conversiones para el campo paraguayo
+            {t('tools.heroSubtitle')}
           </p>
 
           <LivePricesWidget />
@@ -90,15 +92,15 @@ const Herramientas = () => {
       <main className="container py-6">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-6">
-          <Link to="/" className="hover:text-primary transition-colors">Inicio</Link>
+          <Link to="/" className="hover:text-primary transition-colors">{t('tools.breadcrumbHome')}</Link>
           <ChevronRight className="h-3 w-3" />
-          <span className="font-medium text-foreground">Herramientas</span>
+          <span className="font-medium text-foreground">{t('tools.breadcrumb')}</span>
         </nav>
 
         {/* Tools grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {TOOLS.map((tool, i) => (
-            <ToolCard key={i} image={tool.image} title={tool.title} description={tool.desc}>
+            <ToolCard key={i} image={tool.image} title={t(tool.titleKey)} description={t(tool.descKey)}>
               <tool.component />
             </ToolCard>
           ))}
@@ -109,10 +111,10 @@ const Herramientas = () => {
       <footer className="border-t bg-card py-8 mt-8">
         <div className="container text-center">
           <p className="text-base font-semibold text-primary mb-2">
-            Conectamos al Campo Paraguayo
+            {t('tools.footerSlogan')}
           </p>
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Kamps Py — Mercado Agrícola Digital
+            © {new Date().getFullYear()} {t('tools.footerCopy')}
           </p>
         </div>
       </footer>

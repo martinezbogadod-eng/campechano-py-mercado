@@ -1,24 +1,27 @@
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const CHICAGO_PRICES = [
-  { name: 'Soja', price: 382.58, change: 0.5, up: true },
-  { name: 'Maíz', price: 165.75, change: -0.7, up: false },
+  { nameKey: 'Soja', price: 382.58, change: 0.5, up: true },
+  { nameKey: 'Maíz', price: 165.75, change: -0.7, up: false },
 ];
 
 const PARAGUAY_PRICES = [
-  { name: 'Soja', price: 379.0 },
-  { name: 'Maíz', price: 175.0 },
+  { nameKey: 'Soja', price: 379.0 },
+  { nameKey: 'Maíz', price: 175.0 },
 ];
 
 const LivePricesWidget = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="mt-6 w-full max-w-3xl rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
-          📊 Precios en Vivo
+          📊 {t('tools.livePrices')}
         </h3>
         <span className="text-white/60 text-xs">
-          Actualizado hace 2 min{' '}
+          {t('tools.updatedAgo')}{' '}
           <span className="inline-block animate-pulse text-accent">●</span>
         </span>
       </div>
@@ -29,8 +32,8 @@ const LivePricesWidget = () => {
           <p className="text-white/80 text-xs font-semibold mb-2">🌎 CHICAGO (CBOT)</p>
           <div className="space-y-1.5">
             {CHICAGO_PRICES.map((item) => (
-              <div key={item.name} className="flex items-center justify-between">
-                <span className="text-white text-sm">{item.name}</span>
+              <div key={item.nameKey} className="flex items-center justify-between">
+                <span className="text-white text-sm">{item.nameKey}</span>
                 <span
                   className={`text-sm font-bold flex items-center gap-1 ${
                     item.up ? 'text-green-400' : 'text-red-400'
@@ -55,8 +58,8 @@ const LivePricesWidget = () => {
           <p className="text-white/80 text-xs font-semibold mb-2">🇵🇾 PARAGUAY (Asunción)</p>
           <div className="space-y-1.5">
             {PARAGUAY_PRICES.map((item) => (
-              <div key={item.name} className="flex items-center justify-between">
-                <span className="text-white text-sm">{item.name}</span>
+              <div key={item.nameKey} className="flex items-center justify-between">
+                <span className="text-white text-sm">{item.nameKey}</span>
                 <span className="text-white text-sm font-bold">
                   ${item.price.toFixed(2)}
                 </span>
@@ -66,7 +69,7 @@ const LivePricesWidget = () => {
         </div>
       </div>
 
-      <p className="text-white/40 text-xs text-center mt-2">Precios en USD/tonelada</p>
+      <p className="text-white/40 text-xs text-center mt-2">{t('tools.pricesUnit')}</p>
     </div>
   );
 };
