@@ -43,6 +43,15 @@ const Header = () => {
         </Link>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/herramientas')}
+            className="hidden sm:flex items-center gap-1.5 text-muted-foreground hover:text-primary"
+          >
+            <Wrench className="h-4 w-4" />
+            <span className="text-sm">Herramientas</span>
+          </Button>
           <LanguageSelector />
           
           {user ? (

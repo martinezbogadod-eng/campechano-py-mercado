@@ -78,6 +78,7 @@ function AppRoutes() {
       <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
       <Route path="/anuncio/:id" element={<OnboardingGuard><ListingPage /></OnboardingGuard>} />
+      <Route path="/herramientas" element={<Herramientas />} />
       <Route path="/perfil/:userId" element={<PublicProfile />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/terminos" element={<Terms />} />
