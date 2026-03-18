@@ -45,8 +45,9 @@ const Herramientas = () => {
       <Header />
 
       {/* Hero */}
-      <div className="relative h-[300px] sm:h-[400px] overflow-hidden bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-primary/70" />
+      <div className="relative h-[300px] sm:h-[400px] overflow-hidden">
+        <img src={heroBg} alt="Cultivos agrícolas" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <Wrench className="h-10 w-10 text-white mb-3" />
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
