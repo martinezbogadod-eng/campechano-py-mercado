@@ -85,7 +85,7 @@ const HeroCarousel = () => {
       </div>
 
       {/* Navy overlay + text */}
-      <div className="absolute inset-0 bg-primary/40 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
+      <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg leading-tight">
           Mercado Agrícola Digital de Paraguay
         </h1>
