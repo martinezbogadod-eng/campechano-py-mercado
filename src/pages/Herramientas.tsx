@@ -72,7 +72,7 @@ const Herramientas = () => {
         {/* Tools grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {TOOLS.map((tool, i) => (
-            <ToolCard key={i} icon={tool.icon} title={tool.title} description={tool.desc}>
+            <ToolCard key={i} image={tool.image} title={tool.title} description={tool.desc}>
               <tool.component />
             </ToolCard>
           ))}
