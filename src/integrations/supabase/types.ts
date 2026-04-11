@@ -446,7 +446,51 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_public: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          created_at: string | null
+          department: string | null
+          description: string | null
+          id: string | null
+          name: string | null
+          phone_whatsapp: string | null
+          preferred_language: string | null
+          profile_type: Database["public"]["Enums"]["profile_type"] | null
+          suspended: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string | null
+          department?: string | null
+          description?: string | null
+          id?: string | null
+          name?: string | null
+          phone_whatsapp?: never
+          preferred_language?: string | null
+          profile_type?: Database["public"]["Enums"]["profile_type"] | null
+          suspended?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string | null
+          department?: string | null
+          description?: string | null
+          id?: string | null
+          name?: string | null
+          phone_whatsapp?: never
+          preferred_language?: string | null
+          profile_type?: Database["public"]["Enums"]["profile_type"] | null
+          suspended?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_user_roles: {
