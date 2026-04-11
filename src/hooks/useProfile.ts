@@ -87,6 +87,7 @@ export function useProfileById(userId: string | undefined) {
 
       return {
         ...profile,
+        phone_whatsapp: null,
         avgRating,
         reviewCount: reviews?.length || 0,
         completedOperations: completedOps || 0,
