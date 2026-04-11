@@ -59,10 +59,10 @@ export function useProfileById(userId: string | undefined) {
     queryFn: async () => {
       if (!userId) return null;
 
-      // Get profile
+      // Get profile - exclude phone_whatsapp for privacy (only owner sees it)
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, name, description, city, department, profile_type, updated_at, created_at, suspended, preferred_language, avatar_url')
         .eq('id', userId)
         .single();
 
