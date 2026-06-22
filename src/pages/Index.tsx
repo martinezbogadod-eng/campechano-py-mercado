@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import HeroCarousel from '@/components/HeroCarousel';
 import { useListings } from '@/hooks/useListings';
@@ -6,6 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { Category, CATEGORIES } from '@/types/listing';
 import { Search, MessageSquare, ShieldCheck, ArrowRight } from 'lucide-react';
 import { CategoryIcon } from '@/components/CategoryIcon';
+
 
 const CATEGORY_DATA: {
   key: Category;
