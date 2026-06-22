@@ -78,7 +78,11 @@ const HeroCarousel = () => {
                 alt={slide.category}
                 className="absolute inset-0 h-full w-full object-cover"
                 loading={i === 0 ? 'eager' : 'lazy'}
+                fetchPriority={i === 0 ? 'high' : 'auto'}
+                width={1600}
+                height={900}
               />
+
             </div>
           ))}
         </div>

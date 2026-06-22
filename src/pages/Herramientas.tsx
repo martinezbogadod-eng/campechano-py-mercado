@@ -13,8 +13,10 @@ import RiegoAspersionCalc from '@/components/herramientas/calculators/RiegoAsper
 import MargenCalc from '@/components/herramientas/calculators/MargenCalc';
 import SiloCalc from '@/components/herramientas/calculators/SiloCalc';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ChevronRight, Wrench } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
+
 
 import imgSuperficie from '@/assets/tools/superficie.jpg';
 import imgRendimiento from '@/assets/tools/rendimiento.jpg';
@@ -62,7 +64,17 @@ const Herramientas = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Herramientas Agrícolas — Calculadoras del Campo | Kamps Py</title>
+        <meta name="description" content="Calculadoras y conversiones para el campo paraguayo: superficie, rendimiento, fertilización, riego, silos y márgenes. Herramientas gratuitas para productores." />
+        <link rel="canonical" href="https://kampspy.com/herramientas" />
+        <meta property="og:title" content="Herramientas Agrícolas — Calculadoras del Campo" />
+        <meta property="og:description" content="Calculadoras gratuitas para superficie, rendimiento, riego, fertilización, silos y márgenes en el campo paraguayo." />
+        <meta property="og:url" content="https://kampspy.com/herramientas" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Header />
+
 
       {/* Hero with dynamic background */}
       <div className="relative h-[300px] sm:h-[400px] overflow-hidden">
@@ -98,7 +110,9 @@ const Herramientas = () => {
         </nav>
 
         {/* Tools grid */}
+        <h2 className="sr-only">Calculadoras agrícolas</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
           {TOOLS.map((tool, i) => (
             <ToolCard key={i} image={tool.image} title={t(tool.titleKey)} description={t(tool.descKey)}>
               <tool.component />

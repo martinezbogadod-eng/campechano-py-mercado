@@ -62,8 +62,10 @@ const Header = () => {
                 size="icon"
                 onClick={() => navigate('/mensajes')}
                 className="relative"
+                aria-label={t('header.messages')}
               >
                 <MessageCircle className="h-5 w-5" />
+
                 {unreadCount > 0 && (
                   <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs bg-accent text-accent-foreground">
                     {unreadCount > 9 ? '9+' : unreadCount}
@@ -81,10 +83,11 @@ const Header = () => {
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon">
+                  <Button variant="outline" size="icon" aria-label={t('header.myProfile')}>
                     <User className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent align="end">
                   <div className="px-2 py-1.5 text-sm font-medium">
                     {user.email}

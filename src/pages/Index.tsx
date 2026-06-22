@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import HeroCarousel from '@/components/HeroCarousel';
 import { useListings } from '@/hooks/useListings';
@@ -6,6 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { Category, CATEGORIES } from '@/types/listing';
 import { Search, MessageSquare, ShieldCheck, ArrowRight } from 'lucide-react';
 import { CategoryIcon } from '@/components/CategoryIcon';
+
 
 const CATEGORY_DATA: {
   key: Category;
@@ -78,7 +80,36 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Kamps Py - Mercado Agrícola Digital de Paraguay</title>
+        <meta name="description" content="Compra y vende granos, ganado, maquinaria, insumos y servicios agrícolas en Paraguay. Conecta productores y compradores en todo el país." />
+        <link rel="canonical" href="https://kampspy.com/" />
+        <meta property="og:title" content="Kamps Py - Mercado Agrícola Digital de Paraguay" />
+        <meta property="og:description" content="Compra y vende productos, insumos y servicios agrícolas en Paraguay." />
+        <meta property="og:url" content="https://kampspy.com/" />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Kamps Py",
+          url: "https://kampspy.com/",
+          description: "Mercado agrícola digital de Paraguay.",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://kampspy.com/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Kamps Py",
+          url: "https://kampspy.com/",
+          description: "Mercado agrícola digital que conecta el campo paraguayo."
+        })}</script>
+      </Helmet>
       <Header />
+
 
       <main>
         {/* Hero carousel */}
