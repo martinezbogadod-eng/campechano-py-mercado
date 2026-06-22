@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { MapPin, Star, Calendar, ExternalLink, MessageCircle, Lock, ArrowLeft, Share2, Pencil, Trash2, Package, Flag } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -195,9 +197,39 @@ const ListingPage = () => {
     }
   };
 
+  const metaDesc = (listing.description || listing.title).slice(0, 155);
+  const ogImage = listing.images?.[0] || listing.imageUrl;
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: listing.title,
+    description: listing.description,
+    image: listing.images?.length ? listing.images : [listing.imageUrl],
+    category: category.label,
+    offers: listing.price !== null ? {
+      "@type": "Offer",
+      price: listing.price,
+      priceCurrency: listing.currency,
+      availability: "https://schema.org/InStock",
+      url: `https://kampspy.com/anuncio/${listing.id}`,
+    } : undefined,
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{`${listing.title} — ${category.label} | Kamps Py`}</title>
+        <meta name="description" content={metaDesc} />
+        <link rel="canonical" href={`https://kampspy.com/anuncio/${listing.id}`} />
+        <meta property="og:title" content={listing.title} />
+        <meta property="og:description" content={metaDesc} />
+        <meta property="og:url" content={`https://kampspy.com/anuncio/${listing.id}`} />
+        <meta property="og:type" content="product" />
+        {ogImage && <meta property="og:image" content={ogImage} />}
+        <script type="application/ld+json">{JSON.stringify(productJsonLd)}</script>
+      </Helmet>
       <Header />
+
       
       <main className="container py-6">
         {/* Back button and owner actions */}

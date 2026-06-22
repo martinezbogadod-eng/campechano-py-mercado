@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+
 import Header from '@/components/Header';
 import ListingGrid from '@/components/ListingGrid';
 import { useListings } from '@/hooks/useListings';
@@ -232,7 +234,25 @@ const CategoryPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{`${categoryLabel} en Paraguay — Anuncios | Kamps Py`}</title>
+        <meta name="description" content={`Anuncios de ${categoryLabel.toLowerCase()} en Paraguay. Compra y vende productos del campo paraguayo en Kamps Py.`} />
+        <link rel="canonical" href={`https://kampspy.com/categoria/${slug}`} />
+        <meta property="og:title" content={`${categoryLabel} en Paraguay — Kamps Py`} />
+        <meta property="og:description" content={`Anuncios de ${categoryLabel.toLowerCase()} en el mercado agrícola paraguayo.`} />
+        <meta property="og:url" content={`https://kampspy.com/categoria/${slug}`} />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: `${categoryLabel} — Kamps Py`,
+          url: `https://kampspy.com/categoria/${slug}`,
+          description: `Anuncios de ${categoryLabel.toLowerCase()} en Paraguay.`,
+          numberOfItems: sorted.length,
+        })}</script>
+      </Helmet>
       <Header />
+
 
       {/* Hero */}
       <div className="relative h-[200px] sm:h-[300px] overflow-hidden">
@@ -328,9 +348,12 @@ const CategoryPage = () => {
         </div>
 
         {/* Results count */}
+        {/* Results */}
+        <h2 className="sr-only">Resultados de la búsqueda</h2>
         <p className="text-sm text-muted-foreground mb-4">
           {isLoading ? t('common.loading') : resultsText}
         </p>
+
 
         {/* Content */}
         {isLoading ? (
