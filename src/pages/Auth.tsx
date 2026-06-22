@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import Logo from '@/components/Logo';
+import { Helmet } from 'react-helmet-async';
 
 const authSchema = z.object({
   email: z.string().email('Email inválido'),
