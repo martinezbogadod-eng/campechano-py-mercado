@@ -1,0 +1,22 @@
+# Kamps Py
+
+> Mercado agrícola digital de Paraguay. Conecta productores, consumidores y prestadores de servicios para comprar y vender productos, insumos y servicios del campo paraguayo.
+
+Kamps Py es una plataforma online para el sector agropecuario paraguayo. Los usuarios publican y buscan anuncios por categoría (granos, frutas y verduras, ganadería, maquinaria, insumos, servicios, forestal, viveros) y acceden a herramientas y calculadoras para el campo.
+
+## Pages
+
+- [Inicio](/): Categorías destacadas y anuncios recientes del mercado agrícola paraguayo.
+- [Herramientas Agrícolas](/herramientas): Calculadoras y conversiones para el campo (superficie, rendimiento, fertilización, riego, silos, márgenes).
+- [Granos y Cereales](/categoria/granos-cereales): Soja, maíz, trigo, sorgo, girasol y otros granos.
+- [Frutas y Verduras](/categoria/frutas-verduras): Producción hortifrutícola del Paraguay.
+- [Ganadería](/categoria/ganaderia): Bovinos, equinos, ovinos y subproductos.
+- [Maquinaria](/categoria/maquinaria): Tractores, cosechadoras, sembradoras e implementos.
+- [Insumos Agrícolas](/categoria/insumos-agricolas): Fertilizantes, semillas y agroquímicos.
+- [Servicios](/categoria/servicios): Pulverización, transporte, asesoría y servicios al productor.
+- [Forestal](/categoria/forestal): Eucaliptos, pinos, rollizos y plantaciones.
+- [Viveros](/categoria/viveros): Plantines, mudas y especies cultivadas.
+
+## Optional
+
+- [Términos y Condiciones](/terminos): Términos de uso de la plataforma.

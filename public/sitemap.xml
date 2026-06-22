@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://kampspy.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://kampspy.com/herramientas</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/categoria/granos-cereales</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/categoria/frutas-verduras</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/categoria/ganaderia</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/categoria/maquinaria</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/categoria/insumos-agricolas</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/categoria/servicios</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/categoria/forestal</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/categoria/viveros</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kampspy.com/auth</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://kampspy.com/terminos</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>
