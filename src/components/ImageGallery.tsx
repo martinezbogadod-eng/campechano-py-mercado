@@ -61,6 +61,7 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
               size="icon"
               className="absolute left-2 top-1/2 -translate-y-1/2 opacity-80 hover:opacity-100"
               onClick={(e) => goToPrevious(e)}
+              aria-label="Imagen anterior"
             >
               <ChevronLeft className="h-5 w-5" />
             </Button>
@@ -69,9 +70,11 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
               size="icon"
               className="absolute right-2 top-1/2 -translate-y-1/2 opacity-80 hover:opacity-100"
               onClick={(e) => goToNext(e)}
+              aria-label="Imagen siguiente"
             >
               <ChevronRight className="h-5 w-5" />
             </Button>
+
           </>
         )}
 
@@ -140,6 +143,7 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
             size="icon"
             className="absolute right-4 top-4 text-background hover:bg-background/20"
             onClick={() => setLightboxOpen(false)}
+            aria-label="Cerrar galería"
           >
             <X className="h-6 w-6" />
           </Button>
@@ -152,6 +156,7 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
                 size="icon"
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-background hover:bg-background/20"
                 onClick={goToPrevious}
+                aria-label="Imagen anterior"
               >
                 <ChevronLeft className="h-8 w-8" />
               </Button>
@@ -160,11 +165,13 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
                 size="icon"
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-background hover:bg-background/20"
                 onClick={goToNext}
+                aria-label="Imagen siguiente"
               >
                 <ChevronRight className="h-8 w-8" />
               </Button>
             </>
           )}
+
 
           {/* Main image */}
           <img

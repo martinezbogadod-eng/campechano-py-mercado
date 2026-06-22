@@ -126,10 +126,18 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Helmet>
+        <title>Iniciar sesión o registrarse | Kamps Py</title>
+        <meta name="description" content="Accedé a tu cuenta de Kamps Py o registrate para publicar anuncios en el mercado agrícola digital de Paraguay." />
+        <link rel="canonical" href="https://kampspy.com/auth" />
+        <meta name="robots" content="noindex" />
+      </Helmet>
+      <h1 className="sr-only">Iniciar sesión o registrarse en Kamps Py</h1>
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
           <Logo size="lg" showText={true} variant="light" />
         </div>
+
 
         <div className="bg-card border rounded-lg p-6 shadow-sm">
           {forgotPassword ? (
